@@ -538,7 +538,7 @@
         Iniciar hornada guiada
       </button>
       <div id="notif-card" style="margin-top: 8px;">
-        <button class="btn btn-secondary" id="notif-btn" onclick="toggleNotificaciones()" style="font-size:13px;">
+        <button class="btn btn-secondary" id="notif-btn" onclick="toggleNotificaciones()" style="font-size:13px; width:100%;">
           🔔 Activar notificaciones
         </button>
         <p id="notif-no" class="hidden" style="font-size:12px; color: var(--color-ash); text-align:center; margin-top:8px; font-weight: var(--fw-ui);">Las notificaciones no están disponibles en este dispositivo.</p>
@@ -1995,10 +1995,7 @@
 
   checkHornadaActiva();
   registrarSW();
-  if (localStorage.getItem('madre_notif') === '1') {
-    const card = document.getElementById('notif-card');
-    if (card) card.style.display = 'none';
-  }
+  actualizarBotoNotif();
 
   // Re-programar notificaciones cuando la app vuelve al foco
   // Esto cubre el caso de iOS que suspende el SW con wifi activo
