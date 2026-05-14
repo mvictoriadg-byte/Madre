@@ -538,7 +538,7 @@
         Iniciar hornada guiada
       </button>
       <div id="notif-card" style="margin-top: 8px;">
-        <button class="btn btn-secondary" id="notif-btn" onclick="toggleNotificaciones()" style="font-size:13px; width:100%;">
+        <button class="btn btn-secondary" id="notif-btn" onclick="toggleNotificaciones()" style="font-size:13px; width:100%; background:transparent; color:var(--color-midnight-ink); border:1px solid var(--color-midnight-ink);">
           🔔 Activar notificaciones
         </button>
         <p id="notif-no" class="hidden" style="font-size:12px; color: var(--color-ash); text-align:center; margin-top:8px; font-weight: var(--fw-ui);">Las notificaciones no están disponibles en este dispositivo.</p>
@@ -559,7 +559,7 @@
         <div class="card">
           <div class="card-title">Hornada en curso</div>
           <p id="hornada-activa-desc" style="font-size:15px; color: var(--color-midnight-ink); font-weight: var(--fw-semibold); margin-bottom: 16px;"></p>
-          <button class="btn btn-primary" onclick="resumeHornada()">
+          <button class="btn btn-muted" onclick="resumeHornada()">
             Retomar →
           </button>
         </div>
@@ -1869,8 +1869,9 @@
     if (yaActivo) {
       localStorage.setItem('madre_notif', '1');
       btn.textContent = '🔕 Desactivar notificaciones';
-      btn.classList.remove('btn-secondary');
-      btn.classList.add('btn-primary');
+      btn.classList.remove('btn-primary');
+      btn.classList.add('btn-secondary');
+      btn.style.opacity = '1';
       btn.disabled = false;
       btn.onclick = desactivarNotificaciones;
       document.getElementById('notif-no').classList.add('hidden');
@@ -1878,6 +1879,7 @@
       btn.textContent = '🔔 Activar notificaciones';
       btn.classList.remove('btn-primary');
       btn.classList.add('btn-secondary');
+      btn.style.opacity = '1';
       btn.disabled = false;
       btn.onclick = activarNotificaciones;
     }
