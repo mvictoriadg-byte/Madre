@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>MADRE</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#141414" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MADRE" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+    :root {
+      --color-midnight-ink:  #141414;
+      --color-pure-canvas:   #ffffff;
+      --color-graphite:      #707070;
+      --color-ash:           #adadad;
+      --color-fog:           #ededed;
+      --color-mist:          #f2f2f2;
+      --color-silver:        #c2c2c2;
+      --font-primary: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --text-caption:     12px;
+      --text-body-sm:     14px;
+      --text-body:        16px;
+      --text-subheading:  20px;
+      --fw-regular:   400;
+      --fw-ui:        440;
+      --fw-mid:       456;
+      --fw-semibold:  600;
+      --radius-pill:  9999px;
+      --radius-card:  16px;
+      --radius-card-lg: 24px;
+      --radius-badge: 8px;
+      --shadow-xl: rgba(0,0,0,0.04) 0px 8px 40px 0px;
+      /* functional */
+      --ok: #1a6640;
+      --ok-bg: #f0f7f3;
+      --warn: #b91c1c;
+      --warn-bg: #fef2f2;
+      --caution: #92400e;
+      --caution-bg: #fffbeb;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--color-pure-canvas);
+      font-family: var(--font-primary);
+      color: var(--color-midnight-ink);
+      font-size: var(--text-body-sm);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "calt" 0, "dlig", "ss07";
+    }
+
+    #app {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 20px 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--color-fog);
+      padding-bottom: 16px;
+    }
+    #btn-atras {
+      background: var(--color-mist);
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: var(--color-midnight-ink);
+      padding: 0;
+      display: none;
+      line-height: 1;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-pill);
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    #btn-atras.visible { display: flex; }
+    header h1 {
+      font-size: 15px;
+      font-weight: var(--fw-semibold);
+      letter-spacing: -0.2px;
+    }
+    header span {
+      font-size: var(--text-caption);
+      color: var(--color-ash);
+      margin-left: auto;
+      font-weight: var(--fw-ui);
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar-wrap {
+      padding: 14px 20px 0;
+      display: none;
+    }
+    .progress-bar-wrap.visible { display: block; }
+    .progress-label {
+      font-size: var(--text-caption);
+      color: var(--color-ash);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: var(--fw-ui);
+    }
+    .progress-track {
+      height: 2px;
+      background: var(--color-fog);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--color-midnight-ink);
+      border-radius: var(--radius-pill);
+      transition: width 0.4s ease;
+    }
+
+    /* ── MAIN CONTENT ── */
+    main { flex: 1; padding: 20px 20px 100px; }
+
+    /* ── SCREENS ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .screen.active { animation: fadeIn 0.18s ease; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--color-pure-canvas);
+      border: 1px solid var(--color-fog);
+      border-radius: var(--radius-card);
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+    .card-lg {
+      border-radius: var(--radius-card-lg);
+      padding: 24px;
+    }
+    .card-title {
+      font-size: var(--text-caption);
+      font-weight: var(--fw-semibold);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--color-ash);
+      margin-bottom: 12px;
+    }
+    .card h2 {
+      font-size: 18px;
+      font-weight: var(--fw-semibold);
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+    .card p {
+      font-size: var(--text-body-sm);
+      color: var(--color-graphite);
+      line-height: 1.6;
+    }
+
+    /* ── ALERT BOXES ── */
+    .alert {
+      border-radius: var(--radius-badge);
+      padding: 14px 16px;
+      font-size: var(--text-body-sm);
+      line-height: 1.6;
+      margin-bottom: 12px;
+      border: 1px solid var(--color-fog);
+    }
+    .alert.ok    { background: var(--ok-bg);      color: var(--ok);      border-color: #c6e8d5; }
+    .alert.warn  { background: var(--warn-bg);    color: var(--warn);    border-color: #fecaca; }
+    .alert.caution { background: var(--caution-bg); color: var(--caution); border-color: #fde68a; }
+    .alert.neutral { background: var(--color-mist); color: var(--color-midnight-ink); border-color: var(--color-fog); }
+    .alert strong { font-weight: var(--fw-semibold); }
+
+    /* ── OPTIONS ── */
+    .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--color-pure-canvas);
+      border: 1px solid var(--color-fog);
+      border-radius: var(--radius-card);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: left;
+      width: 100%;
+      font-family: var(--font-primary);
+    }
+    .option:active { background: var(--color-mist); }
+    .option.selected {
+      border-color: var(--color-midnight-ink);
+      background: var(--color-mist);
+    }
+    .option-dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--color-fog);
+      flex-shrink: 0; margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .option.selected .option-dot {
+      border-color: var(--color-midnight-ink);
+      background: var(--color-midnight-ink);
+    }
+    .option.selected .option-dot::after {
+      content: ''; width: 6px; height: 6px;
+      border-radius: 50%; background: white;
+    }
+    .option-text { flex: 1; }
+    .option-label {
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-mid);
+      color: var(--color-midnight-ink);
+      display: block;
+    }
+    .option-desc {
+      font-size: var(--text-caption);
+      color: var(--color-ash);
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* ── INPUTS ── */
+    .input-group { margin-bottom: 16px; }
+    .input-group label {
+      display: block;
+      font-size: var(--text-caption);
+      font-weight: var(--fw-ui);
+      color: var(--color-graphite);
+      margin-bottom: 6px;
+    }
+    .input-group input, .input-group select {
+      width: 100%; padding: 12px 16px;
+      border: 1px solid var(--color-fog);
+      border-radius: var(--radius-pill);
+      font-size: var(--text-body-sm);
+      font-family: var(--font-primary);
+      background: var(--color-mist);
+      color: var(--color-midnight-ink);
+      appearance: none; -webkit-appearance: none;
+      font-weight: var(--fw-ui);
+    }
+    .input-group input:focus, .input-group select:focus {
+      outline: none;
+      border-color: var(--color-midnight-ink);
+      background: var(--color-pure-canvas);
+    }
+
+    /* ── SLIDER ── */
+    .slider-wrap { margin-bottom: 16px; }
+    .slider-wrap label {
+      display: flex; justify-content: space-between;
+      font-size: var(--text-caption);
+      font-weight: var(--fw-ui);
+      color: var(--color-graphite);
+      margin-bottom: 10px;
+    }
+    .slider-wrap label span {
+      color: var(--color-midnight-ink);
+      font-weight: var(--fw-semibold);
+    }
+    input[type="range"] {
+      width: 100%; height: 2px; border-radius: var(--radius-pill);
+      appearance: none; -webkit-appearance: none;
+      background: var(--color-fog); cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none; -webkit-appearance: none;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--color-midnight-ink); cursor: pointer;
+    }
+
+    /* ── TIMER / COUNTDOWN ── */
+    .timer-card {
+      background: var(--color-midnight-ink);
+      color: white;
+      border-radius: var(--radius-card);
+      padding: 24px 20px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .timer-label {
+      font-size: var(--text-caption);
+      opacity: 0.5;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+      font-weight: var(--fw-semibold);
+      text-transform: uppercase;
+    }
+    .timer-time {
+      font-size: 44px;
+      font-weight: 652;
+      letter-spacing: -1.5px;
+      line-height: 1;
+    }
+    .timer-sub {
+      font-size: var(--text-caption);
+      opacity: 0.5;
+      margin-top: 8px;
+      font-weight: var(--fw-ui);
+    }
+    .countdown-card {
+      background: var(--color-midnight-ink);
+      color: white;
+      border-radius: var(--radius-card);
+      padding: 28px 20px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .countdown-label {
+      font-size: var(--text-caption);
+      opacity: 0.5;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+      font-weight: var(--fw-semibold);
+      text-transform: uppercase;
+    }
+    .countdown-time {
+      font-size: 52px;
+      font-weight: 652;
+      letter-spacing: -2px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .countdown-sub {
+      font-size: var(--text-caption);
+      opacity: 0.5;
+      margin-top: 8px;
+      font-weight: var(--fw-ui);
+    }
+
+    /* ── CHECKPOINT BADGE ── */
+    .checkpoint-badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--color-mist);
+      border-radius: var(--radius-pill);
+      padding: 4px 12px;
+      font-size: var(--text-caption);
+      font-weight: var(--fw-semibold);
+      color: var(--color-ash);
+      margin-bottom: 16px;
+    }
+
+    /* ── DATA TABLE ── */
+    .data-table { width: 100%; border-collapse: collapse; font-size: var(--text-body-sm); }
+    .data-table td {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--color-fog);
+    }
+    .data-table td:first-child { color: var(--color-graphite); font-weight: var(--fw-ui); }
+    .data-table td:last-child { text-align: right; font-weight: var(--fw-semibold); }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: block; width: 100%; padding: 14px 20px;
+      border-radius: var(--radius-pill);
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-semibold);
+      font-family: var(--font-primary);
+      cursor: pointer; border: none;
+      transition: opacity 0.15s, transform 0.1s;
+      text-align: center;
+      letter-spacing: -0.1px;
+    }
+    .btn:active { transform: scale(0.98); opacity: 0.85; }
+    .btn-primary {
+      background: var(--color-midnight-ink);
+      color: var(--color-pure-canvas);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--color-midnight-ink);
+      border: 1px solid var(--color-midnight-ink);
+    }
+    .btn-muted {
+      background: transparent;
+      color: var(--color-ash);
+      border: 1px solid var(--color-fog);
+    }
+    .btn:disabled { opacity: 0.25; cursor: not-allowed; }
+    .btn-row { display: flex; gap: 8px; margin-top: 8px; }
+    .btn-row .btn { flex: 1; }
+
+    /* ── BOTTOM NAV ── */
+    nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 480px;
+      background: var(--color-pure-canvas);
+      border-top: 1px solid var(--color-fog);
+      display: flex;
+      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+    }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 3px; padding: 8px 0; cursor: pointer;
+      background: none; border: none; font-family: var(--font-primary);
+      color: var(--color-ash);
+      font-size: var(--text-caption);
+      font-weight: var(--fw-semibold);
+      transition: color 0.15s;
+    }
+    .nav-item.active { color: var(--color-midnight-ink); }
+    .nav-icon { font-size: 20px; line-height: 1; }
+
+    /* ── MISC ── */
+    .section-label {
+      font-size: var(--text-caption);
+      font-weight: var(--fw-semibold);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--color-ash);
+      margin-bottom: 10px;
+      margin-top: 20px;
+    }
+    .status-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0; border-bottom: 1px solid var(--color-fog);
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-ui);
+    }
+    .status-row:last-child { border-bottom: none; }
+    .status-row span:last-child { color: var(--color-graphite); }
+
+    /* ── INICIO ── */
+    .inicio-hero {
+      padding: 32px 0 28px;
+      text-align: center;
+    }
+    .inicio-hero h2 {
+      font-size: 28px;
+      font-weight: 652;
+      letter-spacing: -0.8px;
+      margin-bottom: 8px;
+      line-height: 1.1;
+    }
+    .inicio-hero p {
+      font-size: var(--text-body-sm);
+      color: var(--color-graphite);
+      max-width: 280px;
+      margin: 0 auto;
+      font-weight: var(--fw-ui);
+      line-height: 1.6;
+    }
+
+    /* ── HISTORIAL ── */
+    .historial-item {
+      background: var(--color-pure-canvas);
+      border: 1px solid var(--color-fog);
+      border-radius: var(--radius-card);
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .historial-date {
+      font-size: var(--text-caption);
+      color: var(--color-ash);
+      margin-top: 2px;
+      font-weight: var(--fw-ui);
+    }
+    .historial-result {
+      font-size: var(--text-caption);
+      font-weight: var(--fw-semibold);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+    }
+    .result-ok {
+      background: var(--ok-bg);
+      color: var(--ok);
+    }
+    .result-fail {
+      background: var(--warn-bg);
+      color: var(--warn);
+    }
+    .result-partial {
+      background: var(--caution-bg);
+      color: var(--caution);
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <button id="btn-atras" onclick="irAtras()">←</button>
+    <h1>MADRE</h1>
+    <span id="header-sub">tu guía de masa madre</span>
+  </header>
+
+  <div class="progress-bar-wrap" id="progress-wrap">
+    <div class="progress-label">
+      <span id="progress-label-text">Checkpoint 1 de 9</span>
+      <span id="progress-pct">11%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width: 11%"></div>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- ===== INICIO ===== -->
+    <div class="screen active" id="screen-inicio">
+      <div class="inicio-hero">
+        <h2>¿Cómo arrancamos hoy?</h2>
+        <p>Seguí tu hornada paso a paso o consultá un momento del proceso.</p>
+      </div>
+      <button class="btn btn-primary" style="margin-bottom: 10px" onclick="startHornada()">
+        Iniciar hornada guiada
+      </button>
+      <button class="btn btn-secondary" style="margin-bottom: 10px" onclick="navTo('screen-historial', document.querySelectorAll('.nav-item')[1])">
+        Ver historial
+      </button>
+      <div id="notif-card" style="margin-top: 8px;">
+        <button class="btn btn-secondary" id="notif-btn" onclick="toggleNotificaciones()" style="font-size:13px;">
+          🔔 Activar notificaciones
+        </button>
+        <p id="notif-no" class="hidden" style="font-size:12px; color: var(--color-ash); text-align:center; margin-top:8px; font-weight: var(--fw-ui);">Las notificaciones no están disponibles en este dispositivo.</p>
+      </div>
+
+      <!-- Toast de confirmación -->
+      <div id="toast-notif" style="
+        display:none; position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
+        background:var(--color-midnight-ink); color:white;
+        padding:12px 20px; border-radius:var(--radius-pill);
+        font-size:13px; font-weight:var(--fw-semibold); font-family:var(--font-primary);
+        white-space:nowrap; z-index:999;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        transition: opacity 0.3s ease;
+      ">✓ Notificaciones activadas</div>
+
+      <div id="hornada-activa-card" class="hidden" style="margin-top: 20px;">
+        <div class="card">
+          <div class="card-title">Hornada en curso</div>
+          <p id="hornada-activa-desc" style="font-size:15px; color: var(--color-midnight-ink); font-weight: var(--fw-semibold); margin-bottom: 16px;"></p>
+          <button class="btn btn-primary" onclick="resumeHornada()">
+            Retomar →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CP1: REFRESCO ===== -->
+    <div class="screen" id="screen-cp1">
+      <div class="checkpoint-badge">El refresco</div>
+
+      <div class="card">
+        <h2>¿Ya refrescaste tu masa madre?</h2>
+        <p>Esto determina desde dónde calculamos tu ventana de pico.</p>
+      </div>
+
+      <div class="options" id="cp1-opciones">
+        <button class="option" onclick="selectCp1('ahora', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">
+            <span class="option-label">Sí, justo ahora</span>
+            <span class="option-desc">Acabo de mezclar el refresco.</span>
+          </div>
+        </button>
+        <button class="option" onclick="selectCp1('hace-rato', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">
+            <span class="option-label">Sí, hace un rato</span>
+            <span class="option-desc">Ya tiene algunas horas.</span>
+          </div>
+        </button>
+        <button class="option" onclick="selectCp1('no', this)">
+          <div class="option-dot"></div>
+          <div class="option-text">
+            <span class="option-label">Todavía no</span>
+            <span class="option-desc">Voy a refrescar ahora.</span>
+          </div>
+        </button>
+      </div>
+
+      <div id="cp1-form" class="hidden">
+        <div class="input-group">
+          <label>¿A qué hora refrescaste?</label>
+          <input type="time" id="cp1-hora" />
+        </div>
+        <div class="slider-wrap">
+          <label>Temperatura de la cocina <span id="cp1-temp-val">22°C</span></label>
+          <input type="range" min="14" max="34" value="22" id="cp1-temp"
+            oninput="document.getElementById('cp1-temp-val').textContent = this.value + '°C'" />
+        </div>
+        <div class="input-group">
+          <label>¿Qué ratio usaste?</label>
+          <select id="cp1-ratio">
+            <option value="1:1:1">1:1:1</option>
+            <option value="1:2:2" selected>1:2:2</option>
+            <option value="1:3:3">1:3:3</option>
+            <option value="1:5:5">1:5:5</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>¿Cuántos gramos de masa madre usás en la hornada?</label>
+          <input type="number" id="cp1-gramos-mm" value="100" min="20" max="300" placeholder="100" style="font-variant-numeric: tabular-nums;" />
+        </div>
+        <button class="btn btn-primary" onclick="calcularVentanaPico()">Calcular ventana de pico →</button>
+      </div>
+
+      <div id="cp1-resultado" class="hidden">
+        <div class="alert ok">
+          <strong>✓ Ventana estimada de pico</strong><br>
+          <span id="cp1-ventana-texto"></span>
+        </div>
+        <div class="alert neutral">
+          No la uses antes de entrar en ventana aunque haya duplicado. <strong>Duplicar es una señal, no la señal.</strong>
+        </div>
+        <div class="alert neutral" id="cp1-alarma-box" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <span style="font-size:13px;">⏰ Alarma para las <strong id="cp1-alarma-hora">—</strong></span>
+          <button onclick="copiarHoraCp1()" style="background:var(--color-midnight-ink);color:white;border:none;border-radius:var(--radius-pill);padding:8px 16px;font-size:12px;font-weight:var(--fw-semibold);cursor:pointer;white-space:nowrap;font-family:var(--font-primary);" id="cp1-copiar-btn">Copiar hora</button>
+        </div>
+        <div id="cp1-copiado-msg" class="hidden" style="font-size:12px;color:var(--ok);text-align:center;margin-top:-6px;margin-bottom:12px;font-weight:var(--fw-ui);">✓ Hora copiada — abrí la app de reloj y pegala</div>
+        <div class="card">
+          <div class="card-title">Datos registrados</div>
+          <table class="data-table">
+            <tr><td>Hora refresco</td><td id="cp1-r-hora">—</td></tr>
+            <tr><td>Temperatura</td><td id="cp1-r-temp">—</td></tr>
+            <tr><td>Ratio</td><td id="cp1-r-ratio">—</td></tr>
+          </table>
+        </div>
+        <button class="btn btn-primary" style="margin-top:4px" onclick="goToCheckpoint(2)">
+          Ya estoy en ventana → Verificar MM
+        </button>
+        <p style="font-size:12px; color: var(--color-ash); text-align:center; margin-top: 12px; font-weight:var(--fw-ui);">
+          Poné la alarma y volvé cuando suene.
+        </p>
+      </div>
+
+      <div id="cp1-msg-no" class="hidden">
+        <div class="alert neutral">
+          <strong>Refrescá ahora</strong> y volvé cuando hayas mezclado. Te esperamos acá.
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CP2: VERIFICAR PICO MM ===== -->
+    <div class="screen" id="screen-cp2">
+      <div class="checkpoint-badge">¿Está lista tu masa madre?</div>
+      <div class="card">
+        <h2>Estás en la ventana.</h2>
+        <p>Tres preguntas rápidas antes de usarla.</p>
+      </div>
+
+      <div class="section-label">¿Cuánto creció?</div>
+      <div class="options">
+        <button class="option" data-group="crecimiento" data-val="bajo" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Menos del 50%</span><span class="option-desc">Aún está subiendo</span></div>
+        </button>
+        <button class="option" data-group="crecimiento" data-val="optimo" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Entre 50% y 100%</span><span class="option-desc">Zona óptima ✓</span></div>
+        </button>
+        <button class="option" data-group="crecimiento" data-val="pasando" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Más del doble</span><span class="option-desc">Puede estar pasando el pico</span></div>
+        </button>
+        <button class="option" data-group="crecimiento" data-val="pasada" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Más del triple</span><span class="option-desc">Probablemente pasada</span></div>
+        </button>
+      </div>
+
+      <div class="section-label">¿Cómo huele?</div>
+      <div class="options">
+        <button class="option" data-group="olor" data-val="perfecto" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Yogur suave, lácteo</span><span class="option-desc">Perfecto ✓</span></div>
+        </button>
+        <button class="option" data-group="olor" data-val="aceptable" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Ligeramente ácido</span><span class="option-desc">Aceptable</span></div>
+        </button>
+        <button class="option" data-group="olor" data-val="pasada" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Muy ácido, vinagre</span><span class="option-desc">Pasada</span></div>
+        </button>
+        <button class="option" data-group="olor" data-val="plana" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Plano, sin aroma</span><span class="option-desc">Aún no lista</span></div>
+        </button>
+      </div>
+
+      <div class="section-label">¿Cómo está la textura?</div>
+      <div class="options">
+        <button class="option" data-group="textura" data-val="perfecta" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Elástica, aguanta la forma</span><span class="option-desc">Perfecta ✓</span></div>
+        </button>
+        <button class="option" data-group="textura" data-val="aceptable" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Blanda pero con burbujas</span><span class="option-desc">Aceptable</span></div>
+        </button>
+        <button class="option" data-group="textura" data-val="pasada" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Se cae, líquida</span><span class="option-desc">Pasada o débil</span></div>
+        </button>
+      </div>
+
+      <button class="btn btn-primary" id="cp2-evaluar-btn" onclick="evaluarMM()" disabled>Evaluar →</button>
+
+      <div id="cp2-resultado" class="hidden" style="margin-top: 16px;">
+        <div id="cp2-alert"></div>
+        <button class="btn btn-primary" style="margin-top: 8px" onclick="goToCheckpoint(3)" id="cp2-continuar" class="hidden">
+          Empezar la mezcla →
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== CP3: MEZCLA + INICIO BULK ===== -->
+    <div class="screen" id="screen-cp3">
+      <div class="checkpoint-badge">Inicio del bulk</div>
+
+      <div id="cp3-autolisis-form">
+        <div class="card">
+          <h2>Mezclá todo menos la sal</h2>
+          <p>Harina, agua y masa madre juntos. Reposo de 40 minutos antes de agregar la sal.</p>
+        </div>
+        <div class="input-group">
+          <label>¿A qué hora mezclaste?</label>
+          <input type="time" id="cp3-hora-autolisis" />
+        </div>
+        <div class="alert neutral">Reposo de 40 minutos. Volvé cuando vayas a agregar la sal.</div>
+        <button class="btn btn-primary" onclick="guardarAutolisis()">Registrar y esperar →</button>
+      </div>
+
+      <div id="cp3-bulk-form" class="hidden">
+        <div class="card">
+          <h2>¿Agregaste la sal y mezclaste bien?</h2>
+          <p>Revisá las cantidades de esta hornada — si cambiaron algo, ajustamos el tiempo estimado.</p>
+        </div>
+        <div class="input-group">
+          <label>Harina (g)</label>
+          <input type="number" id="cp3-harina" value="500" min="100" max="2000" placeholder="500" />
+        </div>
+        <div class="input-group">
+          <label>Agua (g)</label>
+          <input type="number" id="cp3-agua" value="350" min="50" max="2000" placeholder="350" />
+        </div>
+        <div class="input-group">
+          <label>Masa madre (g)</label>
+          <input type="number" id="cp3-mm" value="100" min="10" max="500" placeholder="100" />
+        </div>
+        <button class="btn btn-primary" onclick="iniciarBulk()">Sí, iniciar bulk →</button>
+      </div>
+
+      <div id="cp3-bulk-resultado" class="hidden">
+        <div class="timer-card">
+          <div class="timer-label">BULK TOTAL ESTIMADO</div>
+          <div class="timer-time" id="cp3-bulk-duration">—</div>
+          <div class="timer-sub" id="cp3-bulk-fin">Fin estimado: —</div>
+        </div>
+        <div class="alert neutral">
+          Las primeras 2h son de pliegues. El reposo empieza después. Esta es tu referencia total.
+        </div>
+        <div class="card">
+          <div class="card-title">Datos del bulk</div>
+          <table class="data-table">
+            <tr><td>Inicio bulk</td><td id="cp3-r-inicio">—</td></tr>
+            <tr><td>Temperatura</td><td id="cp3-r-temp">—</td></tr>
+            <tr><td>Hidratación</td><td id="cp3-r-hidrat">—</td></tr>
+            <tr><td>Inoculación MM</td><td id="cp3-r-inoc">—</td></tr>
+            <tr><td>Fin estimado</td><td id="cp3-r-fin">—</td></tr>
+          </table>
+        </div>
+        <button class="btn btn-primary" onclick="goToCheckpoint(4)">
+          Empezar pliegues →
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== CP4: PLIEGUES ===== -->
+    <div class="screen" id="screen-cp4">
+      <div class="checkpoint-badge">Los pliegues</div>
+
+      <div class="card">
+        <h2>4 series de pliegues</h2>
+        <p>Una serie cada 30 minutos, 4 pliegues girando el bol 90° en cada una. Duración total: 2 horas.</p>
+      </div>
+
+      <div id="cp4-timer-wrap" class="hidden">
+        <div class="countdown-card">
+          <div class="countdown-label">PRÓXIMO PLIEGUE EN</div>
+          <div class="countdown-time" id="cp4-countdown">30:00</div>
+          <div class="countdown-sub" id="cp4-countdown-sub">Pliegue 1 de 4</div>
+        </div>
+        <div class="alert neutral" id="cp4-espera-msg">Descansá. La app te avisa cuando es hora.</div>
+      </div>
+
+      <div id="cp4-pliegues-container"></div>
+
+      <div id="cp4-alerta-ajuste" class="hidden">
+        <div class="alert caution">
+          <strong>Ajuste registrado:</strong> La masa no está respondiendo bien. Acortamos el reposo estimado 30 minutos.
+        </div>
+      </div>
+
+      <div id="cp4-completado" class="hidden">
+        <div class="alert ok">
+          <strong>✓ 4 pliegues completados.</strong><br>La masa entra en reposo en bloque.
+        </div>
+        <button class="btn btn-primary" style="margin-top:8px" onclick="goToCheckpoint(5)">
+          Iniciar reposo →
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== CP5: REPOSO EN BLOQUE ===== -->
+    <div class="screen" id="screen-cp5">
+      <div class="checkpoint-badge">Reposo en bloque</div>
+
+      <div class="card">
+        <h2>Los pliegues terminaron.</h2>
+        <p>Ahora la masa trabaja sola. No la toques.</p>
+      </div>
+
+      <div class="countdown-card">
+        <div class="countdown-label">REPOSO RESTANTE ESTIMADO</div>
+        <div class="countdown-time" id="cp5-countdown">—</div>
+        <div class="countdown-sub" id="cp5-countdown-sub">Revisión crítica a las <span id="cp5-hora-revision">—</span></div>
+      </div>
+
+      <div class="alert neutral">
+        Cuando suene la alarma, pasás al checkpoint 6 para evaluar el bulk. No antes.
+      </div>
+
+      <div class="alert neutral" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <span style="font-size:13px;">⏰ Alarma para las <strong id="cp5-alarma-hora">—</strong></span>
+        <button onclick="copiarHoraCp5()" style="background:var(--color-midnight-ink);color:white;border:none;border-radius:var(--radius-pill);padding:8px 16px;font-size:12px;font-weight:var(--fw-semibold);cursor:pointer;white-space:nowrap;font-family:var(--font-primary);" id="cp5-copiar-btn">Copiar hora</button>
+      </div>
+      <div id="cp5-copiado-msg" class="hidden" style="font-size:12px;color:var(--ok);text-align:center;margin-top:-6px;margin-bottom:12px;font-weight:var(--fw-ui);">✓ Hora copiada — abrí la app de reloj y pegala</div>
+
+      <button class="btn btn-primary" onclick="goToCheckpoint(6)">
+        Ya es hora de revisar →
+      </button>
+    </div>
+
+    <!-- ===== CP6: EVALUACIÓN FINAL DEL BULK ===== -->
+    <div class="screen" id="screen-cp6">
+      <div class="checkpoint-badge">¿Cuándo formar?</div>
+
+      <div class="card">
+        <h2>El momento más importante.</h2>
+        <p>Dos observaciones, en este orden.</p>
+      </div>
+
+      <div class="section-label">¿Cuánto creció la masa?</div>
+      <div class="options">
+        <button class="option" data-group="volumen" data-val="poco" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Menos del 50%</span><span class="option-desc">Apenas creció</span></div>
+        </button>
+        <button class="option" data-group="volumen" data-val="optimo" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Entre 50% y 75%</span><span class="option-desc">Zona óptima</span></div>
+        </button>
+        <button class="option" data-group="volumen" data-val="mucho" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Más del 75–80%</span><span class="option-desc">Creció mucho</span></div>
+        </button>
+      </div>
+
+      <div class="section-label">¿Cómo responde al tacto?</div>
+      <p style="font-size:13px; color: var(--color-ash); margin-bottom: 10px; font-weight:var(--fw-ui);">Tocá suavemente con un dedo húmedo.</p>
+      <div class="options">
+        <button class="option" data-group="tacto" data-val="rebote" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Rebota despacio y vuelve</span><span class="option-desc">Gluten sano ✓</span></div>
+        </button>
+        <button class="option" data-group="tacto" data-val="pegajosa" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Pegajosa, se queda levantada</span><span class="option-desc">Gluten relajado, en el límite</span></div>
+        </button>
+        <button class="option" data-group="tacto" data-val="hundida" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Se hunde y no vuelve</span><span class="option-desc">Gluten roto</span></div>
+        </button>
+      </div>
+
+      <button class="btn btn-primary" id="cp6-evaluar-btn" onclick="evaluarBulk()" disabled style="margin-top:8px">
+        Evaluar →
+      </button>
+
+      <div id="cp6-resultado" class="hidden" style="margin-top: 16px;">
+        <div id="cp6-alert"></div>
+        <button class="btn btn-primary" style="margin-top: 8px" onclick="goToCheckpoint(7)" id="cp6-continuar" class="hidden">
+          Ir al formado →
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== CP7: FORMADO Y NEVERA ===== -->
+    <div class="screen" id="screen-cp7">
+      <div class="checkpoint-badge">Formado y nevera</div>
+
+      <div class="card">
+        <h2>¿Cómo fue el formado?</h2>
+        <p>Registrá para aprender de esta hornada.</p>
+      </div>
+
+      <div class="options">
+        <button class="option" data-group="formado" data-val="limpio" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Limpio, aguantó la tensión</span><span class="option-desc">La masa se formó bien ✓</span></div>
+        </button>
+        <button class="option" data-group="formado" data-val="costoso" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Se pegó pero logré formarlo</span><span class="option-desc">Aceptable</span></div>
+        </button>
+        <button class="option" data-group="formado" data-val="mal" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Se desparramó, perdí la tensión</span><span class="option-desc">El bulk fue probablemente largo</span></div>
+        </button>
+      </div>
+
+      <div id="cp7-resultado" class="hidden">
+        <div id="cp7-alert"></div>
+        <button class="btn btn-primary" style="margin-top: 8px" onclick="goToCheckpoint(8)">
+          Listo, a la nevera →
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== CP8: HORNEADO ===== -->
+    <div class="screen" id="screen-cp8">
+      <div class="checkpoint-badge">El horneado</div>
+
+      <div class="card">
+        <h2>Directo de nevera al horno.</h2>
+        <p>El frío ayuda a que la greña abra mejor. No atemperes.</p>
+      </div>
+
+      <div class="timer-card">
+        <div class="timer-label">PRECALENTAR HORNO</div>
+        <div class="timer-time">240°C</div>
+        <div class="timer-sub">Con la cocotte adentro · mínimo 45 min</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Recordatorios</div>
+        <div class="status-row">
+          <span>Greña: en el último segundo, pan muy frío</span>
+          <span>🔪</span>
+        </div>
+        <div class="status-row">
+          <span>Vapor: mojá la tapa antes de cerrar</span>
+          <span>💧</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tiempos</div>
+        <div class="status-row">
+          <span>Tapado a 240°C</span>
+          <span style="font-weight:var(--fw-semibold); color:var(--color-midnight-ink)">20–25 min</span>
+        </div>
+        <div class="status-row">
+          <span>Destapado a 200°C</span>
+          <span style="font-weight:var(--fw-semibold); color:var(--color-midnight-ink)">25–30 min</span>
+        </div>
+        <div class="status-row">
+          <span>Listo cuando suena hueco al golpear</span>
+          <span>👂</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="goToCheckpoint(9)">Ya lo saqué del horno →</button>
+    </div>
+
+    <!-- ===== CP9: RESULTADO ===== -->
+    <div class="screen" id="screen-cp9">
+      <div class="checkpoint-badge">El resultado</div>
+
+      <div class="card">
+        <h2>Después de al menos 1 hora de reposo.</h2>
+        <p>No lo cortes antes — el interior todavía está terminando de cocinarse.</p>
+      </div>
+
+      <div class="section-label">¿Subió bien en el horno?</div>
+      <div class="options">
+        <button class="option" data-group="resultado" data-val="bien" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Sí, creció y la greña abrió</span></div>
+        </button>
+        <button class="option" data-group="resultado" data-val="algo" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Subió algo, menos de lo esperado</span></div>
+        </button>
+        <button class="option" data-group="resultado" data-val="plano" onclick="selectOption(this)">
+          <div class="option-dot"></div>
+          <div class="option-text"><span class="option-label">Casi no subió, quedó plano</span></div>
+        </button>
+      </div>
+
+      <div id="cp9-diagnostico-extra" class="hidden">
+        <div class="section-label">Ayudame a entender por qué</div>
+        <p style="font-size:13px; color: var(--color-ash); margin-bottom: 10px; font-weight:var(--fw-ui);">¿El reposo terminó...?</p>
+        <div class="options">
+          <button class="option" data-group="bulk-timing" data-val="corto" onclick="selectOption(this)">
+            <div class="option-dot"></div>
+            <div class="option-text"><span class="option-label">Antes de lo estimado</span></div>
+          </button>
+          <button class="option" data-group="bulk-timing" data-val="largo" onclick="selectOption(this)">
+            <div class="option-dot"></div>
+            <div class="option-text"><span class="option-label">Después de lo estimado</span></div>
+          </button>
+          <button class="option" data-group="bulk-timing" data-val="en-tiempo" onclick="selectOption(this)">
+            <div class="option-dot"></div>
+            <div class="option-text"><span class="option-label">En el tiempo estimado</span></div>
+          </button>
+        </div>
+        <p style="font-size:13px; color: var(--color-ash); margin-bottom: 10px; font-weight:var(--fw-ui);">¿La MM olía bien al usarla?</p>
+        <div class="options">
+          <button class="option" data-group="mm-olor" data-val="bien" onclick="selectOption(this)">
+            <div class="option-dot"></div>
+            <div class="option-text"><span class="option-label">Sí, olía bien</span></div>
+          </button>
+          <button class="option" data-group="mm-olor" data-val="mal" onclick="selectOption(this)">
+            <div class="option-dot"></div>
+            <div class="option-text"><span class="option-label">No del todo</span></div>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="cp9-finalizar-btn" onclick="finalizarHornada()" disabled style="margin-top:8px">
+        Finalizar hornada →
+      </button>
+
+      <div id="cp9-resumen" class="hidden" style="margin-top:16px;">
+        <div id="cp9-alert"></div>
+        <div class="card" style="margin-top:12px;">
+          <div class="card-title">Datos de esta hornada</div>
+          <table class="data-table" id="cp9-tabla"></table>
+        </div>
+        <div class="alert neutral" style="margin-top:12px;">
+          La próxima hornada ya no empieza desde cero. Empieza desde aquí.
+        </div>
+        <button class="btn btn-secondary" style="margin-top:8px" onclick="nuevaHornada()">
+          Volver al inicio
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== HISTORIAL ===== -->
+    <div class="screen" id="screen-historial">
+      <div style="padding: 24px 0 20px;">
+        <h2 style="font-size:22px; font-weight:652; letter-spacing:-0.5px;">Historial</h2>
+        <p style="font-size:var(--text-body-sm); color:var(--color-graphite); margin-top:4px; font-weight:var(--fw-ui);">Tus últimas hornadas.</p>
+      </div>
+      <div id="historial-lista"></div>
+    </div>
+
+  </main>
+
+  <nav id="main-nav">
+    <button class="nav-item active" onclick="navTo('screen-inicio', this)">
+      <span class="nav-icon">🍞</span>
+      Hornada
+    </button>
+    <button class="nav-item" onclick="navTo('screen-historial', this)">
+      <span class="nav-icon">📋</span>
+      Historial
+    </button>
+  </nav>
+</div>
+
+<script>
+  const state = {
+    horaRefresco: null,
+    tempCocina: 22,
+    ratio: '1:2:2',
+    gramosHarina: 500,
+    gramosAgua: 350,
+    gramosMM: 100,
+    ventanaInicio: null,
+    ventanaFin: null,
+    horaAutolisis: null,
+    horaBulkInicio: null,
+    horaPlieguesFinEst: null,
+    horaRepososFinEst: null,
+    repososDuracion: null,
+    bulkAjuste: 0,
+    comoFormo: null,
+    selecciones: {},
+    currentCheckpoint: 0,
+    historial: JSON.parse(localStorage.getItem('madre_historial') || '[]'),
+  };
+
+  const activa = JSON.parse(localStorage.getItem('madre_hornada_activa') || 'null');
+  if (activa) Object.assign(state, activa);
+
+  function horaStr(ts) {
+    if (!ts) return '—';
+    return new Date(ts).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function horaStrFromTime(s) {
+    const [h, m] = s.split(':').map(Number);
+    const d = new Date(); d.setHours(h, m, 0, 0); return d;
+  }
+
+  function addMinutes(ts, mins) {
+    return new Date(Number(ts) + mins * 60000);
+  }
+
+  function formatDuration(mins) {
+    const h = Math.floor(mins / 60), m = mins % 60;
+    if (h === 0) return `${m} min`;
+    if (m === 0) return `${h}h`;
+    return `${h}h ${m}min`;
+  }
+
+  // Calcula el bulk total en minutos usando temperatura, ratio, hidratación e inoculación
+  function calcBulkMins(tempC, ratio, gramosHarina, gramosAgua, gramosMM) {
+    // Base a 22°C con hidratación 70% e inoculación 20%
+    let base = 270;
+
+    // Ajuste por temperatura: cada grado extra acorta ~12 min, cada grado menos alarga ~15 min
+    const dTemp = tempC - 22;
+    base -= dTemp * (dTemp > 0 ? 12 : -15);
+
+    // Ajuste por ratio del refresco (madurez de la MM)
+    base += ({ '1:1:1': -20, '1:2:2': 0, '1:3:3': 25, '1:5:5': 55 }[ratio] || 0);
+
+    // Ajuste por hidratación: masa más húmeda fermenta más rápido
+    const hidratacion = gramosAgua / gramosHarina; // ej. 0.70
+    const dHid = hidratacion - 0.70;
+    base -= dHid * 120; // cada 10% más de hidratación acorta ~12 min
+
+    // Ajuste por inoculación: más MM = fermentación más rápida
+    const inoculacion = gramosMM / gramosHarina; // ej. 0.20
+    const dInoc = inoculacion - 0.20;
+    base -= dInoc * 200; // cada 5% más de MM acorta ~10 min
+
+    return Math.max(150, Math.min(480, Math.round(base)));
+  }
+
+  // Calcula la ventana de pico de la MM en minutos desde el refresco
+  function calcVentana(tempC, ratio, gramosMM) {
+    // Base a 22°C con 1:2:2 y MM estándar
+    let base = 300;
+
+    const dTemp = tempC - 22;
+    base -= dTemp * (dTemp > 0 ? 18 : -22);
+
+    base += ({ '1:1:1': -60, '1:2:2': 0, '1:3:3': 50, '1:5:5': 100 }[ratio] || 0);
+
+    // Con más MM en el refresco, el pico llega más rápido (masa madre más activa)
+    // gramosMM aquí es el total que usa en la hornada, no el del refresco
+    // Lo usamos como señal de lo activa que tiene la MM
+    if (gramosMM >= 100) base -= 15;
+    if (gramosMM <= 50)  base += 20;
+
+    base = Math.max(120, Math.min(540, base));
+    return { inicio: base - 30, fin: base + 30 };
+  }
+
+  function saveHornada() {
+    const toSave = {
+      horaRefresco: state.horaRefresco, tempCocina: state.tempCocina,
+      ratio: state.ratio, gramosHarina: state.gramosHarina, gramosAgua: state.gramosAgua, gramosMM: state.gramosMM,
+      ventanaInicio: state.ventanaInicio, ventanaFin: state.ventanaFin,
+      horaAutolisis: state.horaAutolisis, horaBulkInicio: state.horaBulkInicio,
+      horaPlieguesFinEst: state.horaPlieguesFinEst,
+      horaRepososFinEst: state.horaRepososFinEst,
+      repososDuracion: state.repososDuracion,
+      bulkAjuste: state.bulkAjuste, comoFormo: state.comoFormo,
+      selecciones: state.selecciones,
+      currentCheckpoint: state.currentCheckpoint,
+    };
+    localStorage.setItem('madre_hornada_activa', JSON.stringify(toSave));
+  }
+
+  const TOTAL_CP = 9;
+  const cpTitles = {
+    1: 'El refresco', 2: '¿Lista tu MM?', 3: 'Inicio del bulk',
+    4: 'Los pliegues', 5: 'Reposo en bloque', 6: '¿Cuándo formar?',
+    7: 'Formado y nevera', 8: 'El horneado', 9: 'El resultado',
+  };
+
+  function goTo(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+    const isCP = screenId.startsWith('screen-cp');
+    document.getElementById('progress-wrap').classList.toggle('visible', isCP);
+    document.getElementById('main-nav').style.display = isCP ? 'none' : '';
+    document.getElementById('btn-atras').classList.toggle('visible', isCP);
+    if (isCP) {
+      const n = parseInt(screenId.replace('screen-cp', ''));
+      const pct = Math.round((n / TOTAL_CP) * 100);
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-label-text').textContent = `Checkpoint ${n} de ${TOTAL_CP}`;
+      document.getElementById('progress-pct').textContent = pct + '%';
+      document.getElementById('header-sub').textContent = cpTitles[n] || '';
+    } else {
+      document.getElementById('header-sub').textContent = 'tu guía de masa madre';
+    }
+  }
+
+  function navTo(screenId, btn) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    btn.classList.add('active');
+    goTo(screenId);
+    if (screenId === 'screen-historial') renderHistorial();
+    if (screenId === 'screen-inicio') checkHornadaActiva();
+  }
+
+  function irAtras() {
+    const n = state.currentCheckpoint;
+    if (n <= 1) { nuevaHornada(); return; }
+    goToCheckpoint(n - 1);
+  }
+
+  function goToCheckpoint(n) {
+    state.currentCheckpoint = n;
+    saveHornada();
+    goTo('screen-cp' + n);
+    initScreen(n);
+  }
+
+  function initScreen(n) {
+    if (n === 1) initCP1();
+    if (n === 2) initCP2();
+    if (n === 3) initCP3();
+    if (n === 4) initCP4();
+    if (n === 5) initCP5();
+    if (n === 6) initCP6();
+    if (n === 7) initCP7();
+    if (n === 9) initCP9();
+  }
+
+  function checkHornadaActiva() {
+    const card = document.getElementById('hornada-activa-card');
+    if (state.currentCheckpoint > 0 && state.currentCheckpoint < 10) {
+      card.classList.remove('hidden');
+      document.getElementById('hornada-activa-desc').textContent =
+        `En curso — ${cpTitles[state.currentCheckpoint]}`;
+    } else {
+      card.classList.add('hidden');
+    }
+    actualizarBotoNotif();
+  }
+
+  function startHornada() {
+    Object.assign(state, {
+      horaRefresco: null, tempCocina: 22, ratio: '1:2:2',
+      ventanaInicio: null, ventanaFin: null,
+      horaAutolisis: null, horaBulkInicio: null,
+      horaPlieguesFinEst: null, horaRepososFinEst: null,
+      repososDuracion: null, bulkAjuste: 0,
+      comoFormo: null, selecciones: {}, currentCheckpoint: 1,
+    });
+    saveHornada();
+    goToCheckpoint(1);
+  }
+
+  function resumeHornada() { goToCheckpoint(state.currentCheckpoint); }
+
+  function initCP1() {
+    const sel = state.selecciones.cp1;
+    document.querySelectorAll('#screen-cp1 .option').forEach(o => o.classList.remove('selected'));
+    document.getElementById('cp1-form').classList.add('hidden');
+    document.getElementById('cp1-resultado').classList.add('hidden');
+    document.getElementById('cp1-msg-no').classList.add('hidden');
+    if (sel) {
+      const btn = document.querySelector(`#cp1-opciones .option[onclick*="${sel}"]`);
+      if (btn) btn.classList.add('selected');
+      if (sel === 'ahora' || sel === 'hace-rato') {
+        document.getElementById('cp1-form').classList.remove('hidden');
+        if (state.ventanaInicio) mostrarResultadoCp1();
+      } else {
+        document.getElementById('cp1-msg-no').classList.remove('hidden');
+      }
+    } else {
+      const now = new Date();
+      document.getElementById('cp1-hora').value =
+        `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    }
+  }
+
+  function selectCp1(val, el) {
+    document.querySelectorAll('#cp1-opciones .option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    state.selecciones.cp1 = val;
+    document.getElementById('cp1-form').classList.add('hidden');
+    document.getElementById('cp1-resultado').classList.add('hidden');
+    document.getElementById('cp1-msg-no').classList.add('hidden');
+    if (val === 'ahora' || val === 'hace-rato') {
+      const now = new Date();
+      document.getElementById('cp1-hora').value =
+        `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      document.getElementById('cp1-form').classList.remove('hidden');
+    } else {
+      document.getElementById('cp1-msg-no').classList.remove('hidden');
+    }
+  }
+
+  function calcularVentanaPico() {
+    const horaInput = document.getElementById('cp1-hora').value;
+    if (!horaInput) { alert('Ingresá la hora del refresco.'); return; }
+    const temp = parseInt(document.getElementById('cp1-temp').value);
+    const ratio = document.getElementById('cp1-ratio').value;
+    const gramosMM = parseInt(document.getElementById('cp1-gramos-mm').value) || 100;
+    state.tempCocina = temp;
+    state.ratio = ratio;
+    state.gramosMM = gramosMM;
+    state.horaRefresco = horaStrFromTime(horaInput).getTime();
+    const v = calcVentana(temp, ratio, gramosMM);
+    state.ventanaInicio = addMinutes(state.horaRefresco, v.inicio).getTime();
+    state.ventanaFin = addMinutes(state.horaRefresco, v.fin).getTime();
+    saveHornada();
+    document.getElementById('cp1-form').classList.add('hidden');
+    mostrarResultadoCp1();
+    programarNotificacionesHornada();
+  }
+
+  function mostrarResultadoCp1() {
+    document.getElementById('cp1-ventana-texto').textContent =
+      `Entre las ${horaStr(state.ventanaInicio)} y las ${horaStr(state.ventanaFin)} de hoy.`;
+    document.getElementById('cp1-alarma-hora').textContent = horaStr(state.ventanaInicio);
+    document.getElementById('cp1-r-hora').textContent = horaStr(state.horaRefresco);
+    document.getElementById('cp1-r-temp').textContent = state.tempCocina + '°C';
+    document.getElementById('cp1-r-ratio').textContent = state.ratio;
+    document.getElementById('cp1-resultado').classList.remove('hidden');
+  }
+
+  function copiarHoraCp1() {
+    if (!state.ventanaInicio) return;
+    const d = new Date(state.ventanaInicio);
+    const h = String(d.getHours()).padStart(2,'0');
+    const m = String(d.getMinutes()).padStart(2,'0');
+    navigator.clipboard.writeText(`${h}:${m}`).catch(() => {});
+    document.getElementById('cp1-copiar-btn').textContent = '✓ Copiada';
+    document.getElementById('cp1-copiado-msg').classList.remove('hidden');
+    setTimeout(() => {
+      document.getElementById('cp1-copiar-btn').textContent = 'Copiar hora';
+    }, 3000);
+  }
+
+  function initCP2() {
+    document.getElementById('cp2-resultado').classList.add('hidden');
+    document.getElementById('cp2-continuar').classList.add('hidden');
+    restoreSelections('cp2', ['crecimiento', 'olor', 'textura']);
+    checkEvaluarButtons();
+  }
+
+  function evaluarMM() {
+    const crecimiento = getSelected('crecimiento');
+    const olor = getSelected('olor');
+    const textura = getSelected('textura');
+    const alertEl = document.getElementById('cp2-alert');
+    const btnC = document.getElementById('cp2-continuar');
+    const buenas = [
+      ['optimo','perfecto','perfecta'],['optimo','perfecto','aceptable'],
+      ['optimo','aceptable','perfecta'],['optimo','aceptable','aceptable'],
+    ];
+    const parciales = [
+      ['pasando','perfecto','perfecta'],['pasando','perfecto','aceptable'],['pasando','aceptable','perfecta'],
+    ];
+    const combo = [crecimiento, olor, textura];
+    const ok = buenas.some(b => b.every((v,i) => v === combo[i]));
+    const parcial = parciales.some(b => b.every((v,i) => v === combo[i]));
+    const problema = ['pasada','plana'].includes(olor) || textura === 'pasada' || crecimiento === 'pasada';
+    let html = '';
+    if (ok || parcial) {
+      html = `<div class="alert ok"><strong>✓ Tu masa madre está lista.</strong><br>Usala en los próximos 45 minutos. Empezá la autólisis.</div>`;
+      btnC.classList.remove('hidden');
+    } else if (problema) {
+      html = `<div class="alert warn"><strong>⚠ No está en su mejor momento.</strong><br>Esperá 30 minutos más y volvé a evaluar. Si sigue igual, un buen refresco mañana vale más que un pan con MM débil.</div>`;
+    } else {
+      html = `<div class="alert caution"><strong>⏳ Necesita más tiempo.</strong><br>Esperá 30 minutos y revisá de nuevo.</div>`;
+    }
+    alertEl.innerHTML = html;
+    document.getElementById('cp2-resultado').classList.remove('hidden');
+  }
+
+  function initCP3() {
+    if (state.horaBulkInicio) {
+      mostrarResultadoCp3();
+    } else if (state.horaAutolisis) {
+      document.getElementById('cp3-autolisis-form').classList.add('hidden');
+      document.getElementById('cp3-bulk-form').classList.remove('hidden');
+      document.getElementById('cp3-bulk-resultado').classList.add('hidden');
+      // Pre-llenar con valores guardados
+      document.getElementById('cp3-harina').value = state.gramosHarina || 500;
+      document.getElementById('cp3-agua').value   = state.gramosAgua   || 350;
+      document.getElementById('cp3-mm').value     = state.gramosMM     || 100;
+    } else {
+      document.getElementById('cp3-autolisis-form').classList.remove('hidden');
+      document.getElementById('cp3-bulk-form').classList.add('hidden');
+      document.getElementById('cp3-bulk-resultado').classList.add('hidden');
+      const now = new Date();
+      document.getElementById('cp3-hora-autolisis').value =
+        `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    }
+  }
+
+  function guardarAutolisis() {
+    const hs = document.getElementById('cp3-hora-autolisis').value;
+    if (!hs) { alert('Ingresá la hora de la autólisis.'); return; }
+    state.horaAutolisis = horaStrFromTime(hs).getTime();
+    document.getElementById('cp3-autolisis-form').classList.add('hidden');
+    document.getElementById('cp3-bulk-form').classList.remove('hidden');
+    saveHornada();
+  }
+
+  function iniciarBulk() {
+    // Leer cantidades actualizadas
+    const harina = parseInt(document.getElementById('cp3-harina').value) || state.gramosHarina || 500;
+    const agua   = parseInt(document.getElementById('cp3-agua').value)   || state.gramosAgua  || 350;
+    const mm     = parseInt(document.getElementById('cp3-mm').value)     || state.gramosMM    || 100;
+    state.gramosHarina = harina;
+    state.gramosAgua   = agua;
+    state.gramosMM     = mm;
+
+    const ahora = new Date();
+    state.horaBulkInicio = ahora.getTime();
+    const totalMins = calcBulkMins(state.tempCocina, state.ratio, harina, agua, mm) + state.bulkAjuste;
+    const reposoMins = Math.max(60, totalMins - 120);
+    state.repososDuracion = reposoMins;
+    state.horaPlieguesFinEst = addMinutes(ahora, 120).getTime();
+    state.horaRepososFinEst = addMinutes(state.horaPlieguesFinEst, reposoMins).getTime();
+    saveHornada();
+    mostrarResultadoCp3(totalMins);
+    programarNotificacionesHornada();
+  }
+
+  function mostrarResultadoCp3(totalMins) {
+    if (!totalMins) totalMins = (state.repososDuracion || 0) + 120;
+    const harina = state.gramosHarina || 500;
+    const agua   = state.gramosAgua   || 350;
+    const mm     = state.gramosMM     || 100;
+    const hidrat = Math.round((agua / harina) * 100);
+    const inoc   = Math.round((mm   / harina) * 100);
+    document.getElementById('cp3-bulk-duration').textContent = formatDuration(totalMins);
+    document.getElementById('cp3-bulk-fin').textContent = 'Fin estimado: ' + horaStr(state.horaRepososFinEst);
+    document.getElementById('cp3-r-inicio').textContent = horaStr(state.horaBulkInicio);
+    document.getElementById('cp3-r-temp').textContent = state.tempCocina + '°C';
+    document.getElementById('cp3-r-hidrat').textContent = hidrat + '%';
+    document.getElementById('cp3-r-inoc').textContent = inoc + '%';
+    document.getElementById('cp3-r-fin').textContent = horaStr(state.horaRepososFinEst);
+    document.getElementById('cp3-autolisis-form').classList.add('hidden');
+    document.getElementById('cp3-bulk-form').classList.add('hidden');
+    document.getElementById('cp3-bulk-resultado').classList.remove('hidden');
+  }
+
+  const cp4Preguntas = [
+    { num: 1, pregunta: '¿Cómo está la masa?', opciones: [
+      { val: 'sin-tension', label: 'Suave pero sin tensión', desc: 'Normal al inicio' },
+      { val: 'algo-tension', label: 'Algo tensa, aguanta', desc: 'Bien ✓' },
+      { val: 'dura', label: 'Se rompe o muy dura', desc: 'Muy fría o poca hidratación' },
+    ]},
+    { num: 2, pregunta: '¿Cómo está la masa ahora?', opciones: [
+      { val: 'mas-tensa', label: 'Más tensa que antes', desc: 'Bien ✓' },
+      { val: 'igual', label: 'Igual que antes', desc: 'Neutral' },
+      { val: 'mas-blanda', label: 'Más pegajosa y blanda', desc: 'Señal de atención' },
+    ]},
+    { num: 3, pregunta: '¿Ves burbujas en la masa o en las paredes?', opciones: [
+      { val: 'algunas', label: 'Sí, algunas burbujas', desc: 'Fermentación activa ✓' },
+      { val: 'ninguna', label: 'No, nada visible', desc: 'Fermentación lenta' },
+      { val: 'muchas', label: 'Muchas burbujas, muy aireada', desc: 'Va rápido' },
+    ]},
+    { num: 4, pregunta: '¿Cómo está la masa al terminar?', opciones: [
+      { val: 'perfecta', label: 'Tensa, suave, aguanta la forma', desc: 'Perfecta ✓' },
+      { val: 'aceptable', label: 'Blanda pero manejable', desc: 'Aceptable' },
+      { val: 'desparrama', label: 'Se desparrama, sin tensión', desc: 'Bulk probablemente largo' },
+    ]},
+  ];
+
+  let cp4Actual = 0;
+  let cp4TimerInterval = null;
+  let cp4TimerTarget = null;
+
+  function initCP4() {
+    cp4Actual = state.selecciones.cp4Actual || 0;
+    document.getElementById('cp4-alerta-ajuste').classList.add('hidden');
+    document.getElementById('cp4-completado').classList.add('hidden');
+    document.getElementById('cp4-timer-wrap').classList.add('hidden');
+    if (cp4Actual >= 4) {
+      document.getElementById('cp4-completado').classList.remove('hidden');
+    } else {
+      renderCP4();
+    }
+  }
+
+  function renderCP4() {
+    const container = document.getElementById('cp4-pliegues-container');
+    container.innerHTML = '';
+    if (cp4Actual >= 4) {
+      document.getElementById('cp4-timer-wrap').classList.add('hidden');
+      document.getElementById('cp4-completado').classList.remove('hidden');
+      if (cp4TimerInterval) { clearInterval(cp4TimerInterval); cp4TimerInterval = null; }
+      return;
+    }
+    const p = cp4Preguntas[cp4Actual];
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-title">Pliegue ${p.num} de 4</div>
+        <h2 style="font-size:17px">${p.pregunta}</h2>
+      </div>
+      <div class="options">
+        ${p.opciones.map(o => `
+          <button class="option" onclick="responderCp4('${o.val}')">
+            <div class="option-dot"></div>
+            <div class="option-text">
+              <span class="option-label">${o.label}</span>
+              <span class="option-desc">${o.desc}</span>
+            </div>
+          </button>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(div);
+  }
+
+  function responderCp4(val) {
+    if (!state.selecciones.cp4Resp) state.selecciones.cp4Resp = [];
+    state.selecciones.cp4Resp[cp4Actual] = val;
+    if (cp4Actual === 1 && (val === 'igual' || val === 'mas-blanda')) {
+      state.bulkAjuste -= 30;
+      state.repososDuracion = Math.max(30, (state.repososDuracion || 60) - 30);
+      state.horaRepososFinEst = addMinutes(state.horaPlieguesFinEst, state.repososDuracion).getTime();
+      document.getElementById('cp4-alerta-ajuste').classList.remove('hidden');
+      saveHornada();
+    }
+    if (cp4Actual === 2 && val === 'muchas') {
+      state.bulkAjuste -= 45;
+      state.repososDuracion = Math.max(30, (state.repososDuracion || 60) - 45);
+      state.horaRepososFinEst = addMinutes(state.horaPlieguesFinEst, state.repososDuracion).getTime();
+      saveHornada();
+    }
+    if (cp4Actual === 3 && val === 'desparrama') {
+      state.bulkAjuste -= 30;
+      state.repososDuracion = Math.max(30, (state.repososDuracion || 60) - 30);
+      state.horaRepososFinEst = addMinutes(state.horaPlieguesFinEst, state.repososDuracion).getTime();
+      saveHornada();
+    }
+    cp4Actual++;
+    state.selecciones.cp4Actual = cp4Actual;
+    saveHornada();
+    if (cp4Actual < 4) {
+      document.getElementById('cp4-pliegues-container').innerHTML = '';
+      document.getElementById('cp4-timer-wrap').classList.remove('hidden');
+      document.getElementById('cp4-countdown-sub').textContent = `Pliegue ${cp4Actual + 1} de 4`;
+      iniciarCountdownCp4();
+      // Notificación local para el próximo pliegue
+      programarNotifPliegue(cp4Actual + 1);
+    } else {
+      renderCP4();
+    }
+  }
+
+  function iniciarCountdownCp4() {
+    if (cp4TimerInterval) clearInterval(cp4TimerInterval);
+    cp4TimerTarget = Date.now() + 30 * 60 * 1000;
+    cp4TimerInterval = setInterval(tickCountdownCp4, 1000);
+    tickCountdownCp4();
+  }
+
+  function tickCountdownCp4() {
+    const remaining = Math.max(0, cp4TimerTarget - Date.now());
+    const mins = Math.floor(remaining / 60000);
+    const secs = Math.floor((remaining % 60000) / 1000);
+    document.getElementById('cp4-countdown').textContent =
+      `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+    if (remaining === 0) {
+      clearInterval(cp4TimerInterval);
+      cp4TimerInterval = null;
+      document.getElementById('cp4-timer-wrap').classList.add('hidden');
+      renderCP4();
+    }
+  }
+
+  let cp5Interval = null;
+
+  function initCP5() {
+    if (!state.horaRepososFinEst) return;
+    const horaRevision = Math.max(Date.now(), state.horaRepososFinEst - 60 * 60000);
+    document.getElementById('cp5-hora-revision').textContent = horaStr(horaRevision);
+    document.getElementById('cp5-alarma-hora').textContent = horaStr(horaRevision);
+    state.selecciones.cp5HoraRevision = horaRevision;
+    saveHornada();
+    if (cp5Interval) clearInterval(cp5Interval);
+    cp5Interval = setInterval(tickCp5, 1000);
+    tickCp5();
+  }
+
+  function tickCp5() {
+    const remaining = Math.max(0, state.horaRepososFinEst - Date.now());
+    const totalSecs = Math.floor(remaining / 1000);
+    const h = Math.floor(totalSecs / 3600);
+    const m = Math.floor((totalSecs % 3600) / 60);
+    const s = totalSecs % 60;
+    let texto = '';
+    if (h > 0) texto = `${h}h ${String(m).padStart(2,'0')}min`;
+    else texto = `${String(m).padStart(2,'0')}min ${String(s).padStart(2,'0')}seg`;
+    document.getElementById('cp5-countdown').textContent = texto;
+    if (remaining === 0) { clearInterval(cp5Interval); cp5Interval = null; }
+  }
+
+  function copiarHoraCp5() {
+    const horaRevision = state.selecciones.cp5HoraRevision || state.horaRepososFinEst;
+    if (!horaRevision) return;
+    const d = new Date(horaRevision);
+    const h = String(d.getHours()).padStart(2,'0');
+    const m = String(d.getMinutes()).padStart(2,'0');
+    navigator.clipboard.writeText(`${h}:${m}`).catch(() => {});
+    document.getElementById('cp5-copiar-btn').textContent = '✓ Copiada';
+    document.getElementById('cp5-copiado-msg').classList.remove('hidden');
+    setTimeout(() => {
+      document.getElementById('cp5-copiar-btn').textContent = 'Copiar hora';
+    }, 3000);
+  }
+
+  function initCP6() {
+    document.getElementById('cp6-resultado').classList.add('hidden');
+    document.getElementById('cp6-continuar').classList.add('hidden');
+    restoreSelections('cp6', ['volumen', 'tacto']);
+    checkEvaluarButtons();
+  }
+
+  function evaluarBulk() {
+    const volumen = getSelected('volumen');
+    const tacto = getSelected('tacto');
+    const alertEl = document.getElementById('cp6-alert');
+    const btnC = document.getElementById('cp6-continuar');
+    let html = '';
+    if (volumen === 'optimo' && tacto === 'rebote') {
+      html = `<div class="alert ok"><strong>✓ Momento ideal.</strong><br>Formá ahora. No esperes más — ya llegaste.</div>`;
+      btnC.classList.remove('hidden');
+    } else if (volumen === 'optimo' && tacto === 'pegajosa') {
+      html = `<div class="alert caution"><strong>⚠ Estás en el límite.</strong><br>Formá ya. Tenés gas suficiente pero el gluten está relajado. Cada 15 minutos extra es riesgo real.</div>`;
+      btnC.classList.remove('hidden');
+    } else if (volumen === 'optimo' && tacto === 'hundida') {
+      html = `<div class="alert warn"><strong>🔴 Formá ahora mismo.</strong><br>El gas puede escaparse. Riesgo alto de sobrefermentación.</div>`;
+      btnC.classList.remove('hidden');
+    } else if (volumen === 'poco' && tacto === 'rebote') {
+      html = `<div class="alert neutral"><strong>⏳ Necesita más tiempo.</strong><br>Esperá 30–45 minutos y volvé a evaluar.</div>`;
+    } else if (volumen === 'poco' && tacto === 'pegajosa') {
+      html = `<div class="alert warn"><strong>🔴 Algo falló antes.</strong><br>Probablemente la MM no estaba en su mejor momento. Formá ahora — no tiene remedio seguir esperando.</div>`;
+      btnC.classList.remove('hidden');
+    } else if (volumen === 'mucho') {
+      html = `<div class="alert warn"><strong>🔴 Formá ahora mismo.</strong><br>No importa cómo se sienta. El riesgo de perder el gas es alto.</div>`;
+      btnC.classList.remove('hidden');
+    } else {
+      html = `<div class="alert neutral">Formá cuando la masa lo indique.</div>`;
+      btnC.classList.remove('hidden');
+    }
+    alertEl.innerHTML = html;
+    document.getElementById('cp6-resultado').classList.remove('hidden');
+  }
+
+  function initCP7() {
+    document.getElementById('cp7-resultado').classList.add('hidden');
+    restoreSelections('cp7', ['formado']);
+  }
+
+  function initCP9() {
+    document.getElementById('cp9-diagnostico-extra').classList.add('hidden');
+    document.getElementById('cp9-resumen').classList.add('hidden');
+    document.getElementById('cp9-finalizar-btn').classList.remove('hidden');
+    restoreSelections('cp9', ['resultado', 'bulk-timing', 'mm-olor']);
+    checkEvaluarButtons();
+  }
+
+  function finalizarHornada() {
+    const resultado = getSelected('resultado');
+    const alertEl = document.getElementById('cp9-alert');
+    let html = '';
+    if (resultado === 'bien') {
+      html = `<div class="alert ok"><strong>✓ Hornada exitosa.</strong><br>Datos guardados para poder repetirlo.</div>`;
+    } else {
+      const bt = getSelected('bulk-timing'), mm = getSelected('mm-olor');
+      let causa = '';
+      if (mm === 'mal') causa = 'El origen probablemente fue la masa madre — no estaba en su mejor momento.';
+      else if (bt === 'corto') causa = 'El bulk fue corto — la masa no tuvo suficiente gas para crecer.';
+      else if (bt === 'largo') causa = 'El bulk fue largo — la masa sobrefermentó y el gas se escapó al formar.';
+      else causa = 'Con los datos que tenemos es difícil determinarlo. La próxima hornada guiada te dará más información.';
+      html = `<div class="alert caution"><strong>Pan con bajo volumen.</strong><br>${causa}</div>`;
+    }
+    alertEl.innerHTML = html;
+    document.getElementById('cp9-tabla').innerHTML = `
+      <tr><td>Temperatura cocina</td><td>${state.tempCocina}°C</td></tr>
+      <tr><td>Inicio bulk</td><td>${horaStr(state.horaBulkInicio)}</td></tr>
+      <tr><td>Fin pliegues</td><td>${horaStr(state.horaPlieguesFinEst)}</td></tr>
+      <tr><td>Fin reposo est.</td><td>${horaStr(state.horaRepososFinEst)}</td></tr>
+      <tr><td>Reposo estimado</td><td>${formatDuration(state.repososDuracion || 0)}</td></tr>
+      <tr><td>Formado</td><td>${{limpio:'Limpio ✓',costoso:'Costoso',mal:'Difícil'}[state.comoFormo]||'—'}</td></tr>
+      <tr><td>Resultado</td><td>${{bien:'Subió ✓',algo:'Parcial',plano:'No subió'}[resultado]||'—'}</td></tr>
+    `;
+    state.historial.unshift({
+      fecha: new Date().toLocaleDateString('es', { day:'numeric', month:'short', year:'numeric' }),
+      resultado, temp: state.tempCocina, repososDuracion: state.repososDuracion,
+    });
+    if (state.historial.length > 20) state.historial.pop();
+    localStorage.setItem('madre_historial', JSON.stringify(state.historial));
+    localStorage.removeItem('madre_hornada_activa');
+    state.currentCheckpoint = 0;
+    document.getElementById('cp9-resumen').classList.remove('hidden');
+    document.getElementById('cp9-finalizar-btn').classList.add('hidden');
+  }
+
+  function nuevaHornada() {
+    if (cp5Interval) { clearInterval(cp5Interval); cp5Interval = null; }
+    if (cp4TimerInterval) { clearInterval(cp4TimerInterval); cp4TimerInterval = null; }
+    state.currentCheckpoint = 0;
+    document.getElementById('main-nav').style.display = '';
+    document.getElementById('btn-atras').classList.remove('visible');
+    goTo('screen-inicio');
+    checkHornadaActiva();
+    document.querySelectorAll('.nav-item')[0].classList.add('active');
+    document.querySelectorAll('.nav-item')[1].classList.remove('active');
+  }
+
+  function renderHistorial() {
+    const el = document.getElementById('historial-lista');
+    if (state.historial.length === 0) {
+      el.innerHTML = '<div class="card"><p>Todavía no hay hornadas registradas. Completá tu primera hornada guiada.</p></div>';
+      return;
+    }
+    el.innerHTML = state.historial.map(h => `
+      <div class="historial-item">
+        <div>
+          <div style="font-weight:var(--fw-semibold); font-size:var(--text-body-sm)">${h.fecha}</div>
+          <div class="historial-date">${h.temp ? h.temp+'°C' : ''} ${h.repososDuracion ? '· reposo '+formatDuration(h.repososDuracion) : ''}</div>
+        </div>
+        <div class="historial-result ${h.resultado==='bien'?'result-ok':h.resultado==='algo'?'result-partial':'result-fail'}">
+          ${h.resultado==='bien'?'✓ Subió':h.resultado==='algo'?'~ Parcial':'✗ Plano'}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function selectOption(el) {
+    const group = el.dataset.group;
+    document.querySelectorAll(`[data-group="${group}"]`).forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    const cpKey = 'cp' + state.currentCheckpoint;
+    if (!state.selecciones[cpKey]) state.selecciones[cpKey] = {};
+    state.selecciones[cpKey][group] = el.dataset.val;
+    saveHornada();
+    checkEvaluarButtons();
+    if (group === 'formado') {
+      const val = el.dataset.val;
+      state.comoFormo = val;
+      let html = '';
+      if (val === 'limpio') html = `<div class="alert ok"><strong>✓ Perfecto.</strong><br>Cubre bien y a la nevera. Horneás mañana directo desde la nevera — el frío ayuda a que la greña abra mejor.</div>`;
+      else if (val === 'costoso') html = `<div class="alert neutral">Se fue a la nevera. Puede salir bien igual.</div>`;
+      else html = `<div class="alert caution"><strong>Bulk probablemente largo.</strong><br>En la próxima hornada terminamos el reposo 30 min antes.</div>`;
+      document.getElementById('cp7-alert').innerHTML = html;
+      document.getElementById('cp7-resultado').classList.remove('hidden');
+      saveHornada();
+    }
+    if (group === 'resultado') {
+      const val = el.dataset.val;
+      document.getElementById('cp9-diagnostico-extra').classList.toggle('hidden', val === 'bien');
+      checkEvaluarButtons();
+    }
+  }
+
+  function getSelected(group) {
+    const el = document.querySelector(`[data-group="${group}"].selected`);
+    return el ? el.dataset.val : null;
+  }
+
+  function restoreSelections(cpKey, groups) {
+    const saved = state.selecciones[cpKey];
+    if (!saved) return;
+    groups.forEach(group => {
+      const val = saved[group];
+      if (val) {
+        const btn = document.querySelector(`[data-group="${group}"][data-val="${val}"]`);
+        if (btn) btn.classList.add('selected');
+      }
+    });
+  }
+
+  function checkEvaluarButtons() {
+    const cp2btn = document.getElementById('cp2-evaluar-btn');
+    if (cp2btn) cp2btn.disabled = !(getSelected('crecimiento') && getSelected('olor') && getSelected('textura'));
+    const cp6btn = document.getElementById('cp6-evaluar-btn');
+    if (cp6btn) cp6btn.disabled = !(getSelected('volumen') && getSelected('tacto'));
+    const cp9btn = document.getElementById('cp9-finalizar-btn');
+    if (cp9btn) {
+      const res = getSelected('resultado');
+      if (res === 'bien') cp9btn.disabled = false;
+      else if (res) cp9btn.disabled = !(getSelected('bulk-timing') && getSelected('mm-olor'));
+      else cp9btn.disabled = true;
+    }
+  }
+
+  // ─── SERVICE WORKER ──────────────────────────────────────────────────────────
+  let swRegistration = null;
+
+  async function registrarSW() {
+    if (!('serviceWorker' in navigator)) return null;
+    try {
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      swRegistration = reg;
+      // Forzar actualización si hay una nueva versión del SW
+      await reg.update();
+      // Esperar a que el SW esté activo
+      if (reg.installing) {
+        await new Promise(resolve => {
+          reg.installing.addEventListener('statechange', e => {
+            if (e.target.state === 'activated') resolve();
+          });
+        });
+      }
+      return reg;
+    } catch(e) {
+      console.log('SW no se pudo registrar:', e);
+      return null;
+    }
+  }
+
+  async function getSW() {
+    if (swRegistration) return swRegistration;
+    return await registrarSW();
+  }
+
+  // ─── NOTIFICACIONES ───────────────────────────────────────────────────────────
+  function mostrarToast(msg) {
+    const t = document.getElementById('toast-notif');
+    if (!t) return;
+    t.textContent = msg;
+    t.style.display = 'block';
+    t.style.opacity = '1';
+    setTimeout(() => {
+      t.style.opacity = '0';
+      setTimeout(() => { t.style.display = 'none'; }, 300);
+    }, 2800);
+  }
+
+  function actualizarBotoNotif() {
+    const btn = document.getElementById('notif-btn');
+    if (!btn) return;
+    const yaActivo = localStorage.getItem('madre_notif') === '1' ||
+                     ('Notification' in window && Notification.permission === 'granted');
+    if (yaActivo) {
+      localStorage.setItem('madre_notif', '1');
+      btn.textContent = '🔕 Desactivar notificaciones';
+      btn.classList.remove('btn-secondary');
+      btn.classList.add('btn-primary');
+      btn.disabled = false;
+      btn.onclick = desactivarNotificaciones;
+      document.getElementById('notif-no').classList.add('hidden');
+    } else {
+      btn.textContent = '🔔 Activar notificaciones';
+      btn.classList.remove('btn-primary');
+      btn.classList.add('btn-secondary');
+      btn.disabled = false;
+      btn.onclick = activarNotificaciones;
+    }
+  }
+
+  function toggleNotificaciones() {
+    const activo = localStorage.getItem('madre_notif') === '1';
+    if (activo) desactivarNotificaciones();
+    else activarNotificaciones();
+  }
+
+  function desactivarNotificaciones() {
+    localStorage.removeItem('madre_notif');
+    // Cancelar todas las notificaciones pendientes en el SW
+    if (swRegistration && swRegistration.active) {
+      swRegistration.active.postMessage({ type: 'CANCELAR_TODAS' });
+    }
+    actualizarBotoNotif();
+    mostrarToast('Notificaciones desactivadas');
+  }
+
+  async function activarNotificaciones() {
+    const btn = document.getElementById('notif-btn');
+    btn.textContent = '...';
+    btn.disabled = true;
+    const ok = await pedirPermisoNotificaciones();
+    if (ok) {
+      localStorage.setItem('madre_notif', '1');
+      actualizarBotoNotif();
+      document.getElementById('notif-no').classList.add('hidden');
+      mostrarToast('✓ Notificaciones activadas');
+    } else {
+      btn.textContent = '🔔 Activar notificaciones';
+      btn.disabled = false;
+      document.getElementById('notif-no').classList.remove('hidden');
+    }
+  }
+
+  async function pedirPermisoNotificaciones() {
+    try {
+      if (!('Notification' in window)) return false;
+
+      // Pedir permiso nativo primero
+      const result = await Notification.requestPermission();
+      if (result !== 'granted') return false;
+
+      // Registrar SW propio
+      await registrarSW();
+
+      return true;
+    } catch(e) { return false; }
+  }
+
+  // Envía un mensaje al SW para programar una notificación local
+  async function programarNotificacion(id, titulo, mensaje, timestamp) {
+    if (Notification.permission !== 'granted') return;
+    const delay = timestamp - Date.now();
+    if (delay <= 0) return;
+    const sw = await getSW();
+    if (!sw || !sw.active) {
+      // SW aún no activo — fallback con setTimeout en página (solo funciona con app abierta)
+      setTimeout(() => {
+        new Notification(titulo, { body: mensaje, icon: '/icon-192.png' });
+      }, delay);
+      return;
+    }
+    sw.active.postMessage({ type: 'PROGRAMAR', id, titulo, mensaje, timestamp });
+  }
+
+  function cancelarNotificacion(id) {
+    if (swRegistration && swRegistration.active) {
+      swRegistration.active.postMessage({ type: 'CANCELAR', id });
+    }
+  }
+
+  // Programa todas las notificaciones de la hornada actual
+  async function programarNotificacionesHornada() {
+    if (Notification.permission !== 'granted') return;
+    await registrarSW();
+
+    // Ventana de pico (CP1)
+    if (state.ventanaInicio && state.ventanaInicio > Date.now()) {
+      await programarNotificacion(
+        'pico-mm',
+        '🌾 Tu masa madre está lista',
+        'Entraste en la ventana de pico. Hora de verificar tu masa madre.',
+        state.ventanaInicio
+      );
+    }
+    // Revisión del bulk (CP5, 1h antes del fin del reposo)
+    if (state.horaRepososFinEst) {
+      const horaRevision = state.horaRepososFinEst - 60 * 60000;
+      if (horaRevision > Date.now()) {
+        await programarNotificacion(
+          'revision-bulk',
+          '🍞 Hora de revisar el bulk',
+          'Faltan 60 minutos para terminar el reposo. Abrí MADRE.',
+          horaRevision
+        );
+      }
+    }
+  }
+
+  // Programa notificación para el próximo pliegue (se llama desde responderCp4)
+  async function programarNotifPliegue(numPliegue) {
+    if (Notification.permission !== 'granted') return;
+    const timestamp = Date.now() + 30 * 60 * 1000;
+    await programarNotificacion(
+      `pliegue-${numPliegue}`,
+      `🤲 Pliegue ${numPliegue} listo`,
+      'Pasaron 30 minutos. Hora de hacer la siguiente serie de pliegues.',
+      timestamp
+    );
+  }
+
+  checkHornadaActiva();
+  registrarSW();
+  if (localStorage.getItem('madre_notif') === '1') {
+    const card = document.getElementById('notif-card');
+    if (card) card.style.display = 'none';
+  }
+
+  // Re-programar notificaciones cuando la app vuelve al foco
+  // Esto cubre el caso de iOS que suspende el SW con wifi activo
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible' && Notification.permission === 'granted') {
+      const sw = await registrarSW();
+      // Pedirle al SW que re-programe desde su cache interna
+      if (sw && sw.active) sw.active.postMessage({ type: 'REPROGRAMAR' });
+      // Re-programar solo las que aún no pasaron
+      if (state.ventanaInicio && state.ventanaInicio > Date.now()) {
+        await programarNotificacion(
+          'pico-mm',
+          '🌾 Tu masa madre está lista',
+          'Entraste en la ventana de pico. Hora de verificar.',
+          state.ventanaInicio
+        );
+      }
+      if (state.horaRepososFinEst) {
+        const horaRevision = state.horaRepososFinEst - 60 * 60000;
+        if (horaRevision > Date.now()) {
+          await programarNotificacion(
+            'revision-bulk',
+            '🍞 Hora de revisar el bulk',
+            'Faltan 60 minutos para terminar el reposo. Abrí MADRE.',
+            horaRevision
+          );
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>

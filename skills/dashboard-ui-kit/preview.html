@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobbin-Style UI Kit — Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-midnight-ink:  #141414;
+      --color-pure-canvas:   #ffffff;
+      --color-graphite:      #707070;
+      --color-ash:           #adadad;
+      --color-fog:           #ededed;
+      --color-mist:          #f2f2f2;
+      --color-silver:        #c2c2c2;
+      --font-primary: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      --text-caption:     12px;
+      --text-body-sm:     14px;
+      --text-body:        16px;
+      --text-subheading:  20px;
+      --text-heading:     32px;
+      --text-heading-lg:  56px;
+      --text-display:     80px;
+      --fw-regular:   400;
+      --fw-ui:        440;
+      --fw-mid:       456;
+      --fw-semibold:  600;
+      --fw-display:   652;
+      --spacing-8:   8px;
+      --spacing-16:  16px;
+      --spacing-24:  24px;
+      --spacing-32:  32px;
+      --spacing-40:  40px;
+      --spacing-64:  64px;
+      --spacing-80:  80px;
+      --radius-badge:     8px;
+      --radius-thumbnail: 16px;
+      --radius-card:      16px;
+      --radius-card-lg:   24px;
+      --radius-pill:      9999px;
+      --shadow-subtle: rgba(64, 64, 64, 0.16) 0px 0px 0px 1px inset;
+      --shadow-xl: rgba(0, 0, 0, 0.04) 0px 8px 40px 0px;
+      --page-max-width: 1280px;
+      --section-gap: 80px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-primary);
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-regular);
+      color: var(--color-midnight-ink);
+      background: var(--color-pure-canvas);
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "calt" 0, "dlig", "ss07";
+    }
+
+    /* ─── NAV ─── */
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--color-pure-canvas);
+      border-bottom: 1px solid var(--color-fog);
+      height: 60px;
+      padding: 0 var(--spacing-32);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--color-midnight-ink);
+      text-decoration: none;
+      letter-spacing: 0;
+    }
+    .nav-links { display: flex; gap: var(--spacing-32); list-style: none; }
+    .nav-links a {
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-ui);
+      color: var(--color-midnight-ink);
+      text-decoration: none;
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn-primary {
+      display: inline-flex; align-items: center;
+      background: var(--color-midnight-ink);
+      color: var(--color-pure-canvas);
+      border: none; border-radius: var(--radius-pill);
+      padding: 10px 20px;
+      font-family: var(--font-primary);
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-semibold);
+      cursor: pointer;
+      transition: box-shadow 0.15s ease;
+    }
+    .btn-primary:hover { box-shadow: var(--shadow-subtle); }
+
+    .btn-outlined {
+      display: inline-flex; align-items: center;
+      background: transparent;
+      color: var(--color-midnight-ink);
+      border: 1px solid var(--color-midnight-ink);
+      border-radius: var(--radius-pill);
+      padding: 10px 20px;
+      font-family: var(--font-primary);
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-ui);
+      cursor: pointer;
+    }
+
+    /* ─── PILLS ─── */
+    .filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-pill {
+      background: transparent;
+      color: var(--color-midnight-ink);
+      border: 1px solid var(--color-midnight-ink);
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-ui);
+      cursor: pointer;
+      font-family: var(--font-primary);
+    }
+    .filter-pill.active {
+      background: var(--color-midnight-ink);
+      color: var(--color-pure-canvas);
+      border-color: var(--color-midnight-ink);
+    }
+    .filter-pill.muted {
+      color: var(--color-ash);
+      border-color: var(--color-ash);
+    }
+
+    /* ─── INPUT ─── */
+    .search-wrap {
+      position: relative; display: inline-flex; align-items: center;
+    }
+    .search-icon {
+      position: absolute; left: 14px;
+      color: var(--color-ash); font-size: 14px; pointer-events: none;
+    }
+    .search-input {
+      background: var(--color-mist);
+      border: none; border-radius: var(--radius-pill);
+      padding: 10px 16px 10px 36px;
+      font-family: var(--font-primary);
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-regular);
+      color: var(--color-midnight-ink);
+      outline: none; width: 260px;
+    }
+    .search-input::placeholder { color: var(--color-ash); }
+
+    /* ─── CARD ─── */
+    .card {
+      background: var(--color-pure-canvas);
+      border: 1px solid var(--color-fog);
+      border-radius: var(--radius-card);
+      padding: var(--spacing-16);
+    }
+
+    /* ─── BADGE ─── */
+    .badge {
+      display: inline-flex; align-items: center;
+      background: var(--color-midnight-ink);
+      color: var(--color-pure-canvas);
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      font-size: var(--text-caption);
+      font-weight: var(--fw-semibold);
+    }
+    .badge-muted {
+      background: var(--color-mist);
+      color: var(--color-graphite);
+    }
+
+    /* ─── LAYOUT ─── */
+    .page-container { max-width: var(--page-max-width); margin: 0 auto; padding: 0 var(--spacing-32); }
+    .section { margin-bottom: var(--section-gap); }
+
+    .hero {
+      text-align: center;
+      padding: var(--spacing-80) 0 var(--spacing-64);
+      display: flex; flex-direction: column; align-items: center;
+      gap: var(--spacing-24);
+    }
+    .hero-app-icon {
+      width: 64px; height: 64px;
+      border-radius: 16px;
+      background: var(--color-midnight-ink);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(48px, 6vw, 80px);
+      font-weight: 652;
+      line-height: 1.00;
+      letter-spacing: -0.88px;
+      color: var(--color-midnight-ink);
+      max-width: 800px;
+    }
+    .hero p {
+      font-size: var(--text-subheading);
+      font-weight: var(--fw-ui);
+      color: var(--color-graphite);
+      line-height: 1.50;
+      max-width: 520px;
+      letter-spacing: 0.28px;
+    }
+    .hero-ctas { display: flex; gap: var(--spacing-16); align-items: center; }
+
+    /* ─── TRUST BAR ─── */
+    .trust-bar {
+      border-top: 1px solid var(--color-fog);
+      border-bottom: 1px solid var(--color-fog);
+      padding: var(--spacing-24) 0;
+      display: flex; align-items: center; gap: var(--spacing-40);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .trust-label {
+      font-size: var(--text-caption);
+      font-weight: var(--fw-ui);
+      color: var(--color-ash);
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+    .trust-logos { display: flex; gap: var(--spacing-32); align-items: center; }
+    .trust-logo {
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--color-silver);
+      letter-spacing: -0.02em;
+    }
+
+    /* ─── GALLERY ─── */
+    .gallery-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: var(--spacing-16);
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-16);
+    }
+
+    .screenshot-card {
+      background: var(--color-pure-canvas);
+      border: 1px solid var(--color-fog);
+      border-radius: var(--radius-card);
+      padding: var(--spacing-16);
+      position: relative;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .screenshot-card:hover { border-color: var(--color-silver); }
+
+    .screenshot-img {
+      width: 100%; aspect-ratio: 9/16;
+      background: var(--color-mist);
+      border-radius: 12px;
+      margin-bottom: var(--spacing-16);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .screenshot-placeholder {
+      display: flex; flex-direction: column; gap: 8px;
+      padding: 24px; width: 100%;
+    }
+    .ph-line {
+      height: 10px; border-radius: 9999px;
+      background: var(--color-fog);
+    }
+    .ph-line.dark { background: var(--color-silver); }
+    .ph-box {
+      height: 80px; border-radius: 8px;
+      background: var(--color-fog);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: var(--spacing-16); left: var(--spacing-16);
+    }
+    .screenshot-footer {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .app-icon-sm {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: var(--color-midnight-ink);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 11px; font-weight: 700;
+    }
+    .app-name {
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-ui);
+      color: var(--color-midnight-ink);
+    }
+    .app-screens {
+      margin-left: auto;
+      font-size: var(--text-caption);
+      color: var(--color-ash);
+      font-weight: var(--fw-regular);
+    }
+
+    /* ─── STATS ─── */
+    .stats-section {
+      background: var(--color-mist);
+      padding: var(--spacing-64) var(--spacing-32);
+      text-align: center;
+    }
+    .stats-row {
+      display: flex; justify-content: center; gap: var(--spacing-80);
+      max-width: var(--page-max-width); margin: 0 auto;
+      flex-wrap: wrap;
+    }
+    .stat-item { display: flex; flex-direction: column; gap: var(--spacing-8); }
+    .stat-num {
+      font-size: clamp(40px, 5vw, 56px);
+      font-weight: 652;
+      line-height: 1.00;
+      letter-spacing: -0.39px;
+      color: var(--color-midnight-ink);
+    }
+    .stat-label {
+      font-size: var(--text-body);
+      font-weight: var(--fw-ui);
+      color: var(--color-graphite);
+      letter-spacing: 0.21px;
+    }
+
+    /* ─── TESTIMONIALS ─── */
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-16);
+    }
+    .testimonial-card {
+      background: var(--color-pure-canvas);
+      border: 1px solid var(--color-fog);
+      border-radius: var(--radius-card);
+      padding: var(--spacing-24);
+      display: flex; flex-direction: column; gap: var(--spacing-16);
+    }
+    .testimonial-header {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--color-mist);
+      border: 1px solid var(--color-fog);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: var(--fw-semibold);
+      color: var(--color-graphite); flex-shrink: 0;
+    }
+    .t-name {
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--color-midnight-ink);
+      line-height: 1.3;
+    }
+    .t-company {
+      font-size: var(--text-caption);
+      font-weight: var(--fw-regular);
+      color: var(--color-graphite);
+    }
+    .t-body {
+      font-size: var(--text-body-sm);
+      font-weight: var(--fw-regular);
+      color: var(--color-midnight-ink);
+      line-height: 1.60;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--color-fog);
+      padding: var(--spacing-40) var(--spacing-32);
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: var(--page-max-width); margin: 0 auto;
+    }
+    .footer-copy {
+      font-size: var(--text-caption);
+      color: var(--color-ash);
+    }
+    .footer-links { display: flex; gap: var(--spacing-24); }
+    .footer-links a {
+      font-size: var(--text-caption);
+      color: var(--color-graphite);
+      text-decoration: none;
+      font-weight: var(--fw-ui);
+    }
+
+    /* ─── COMPONENT SPEC SECTION ─── */
+    .spec-section {
+      background: var(--color-mist);
+      padding: var(--spacing-64) 0;
+    }
+    .spec-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-24);
+      max-width: var(--page-max-width); margin: 0 auto; padding: 0 var(--spacing-32);
+    }
+    .spec-card {
+      background: var(--color-pure-canvas);
+      border: 1px solid var(--color-fog);
+      border-radius: var(--radius-card-lg);
+      padding: var(--spacing-24);
+    }
+    .spec-title {
+      font-size: var(--text-caption);
+      font-weight: var(--fw-semibold);
+      color: var(--color-ash);
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      margin-bottom: var(--spacing-16);
+    }
+    .spec-content {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    }
+    .divider { border: none; border-top: 1px solid var(--color-fog); margin: var(--spacing-40) 0; }
+
+    .section-heading {
+      font-size: var(--text-heading);
+      font-weight: var(--fw-semibold);
+      color: var(--color-midnight-ink);
+      margin-bottom: var(--spacing-24);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─── -->
+  <nav class="navbar">
+    <a class="nav-logo" href="#">Masamadre</a>
+    <ul class="nav-links">
+      <li><a href="#">Precios</a></li>
+      <li><a href="#">Recursos</a></li>
+      <li><a href="#">Iniciar sesión</a></li>
+    </ul>
+    <button class="btn-primary">Únete gratis</button>
+  </nav>
+
+  <div class="page-container">
+
+    <!-- ─── HERO ─── -->
+    <section class="hero section">
+      <div class="hero-app-icon">🍞</div>
+      <h1>Inspírate con diseño real del mundo.</h1>
+      <p>Explora miles de pantallas y flujos de las mejores apps. Encuentra lo que buscas en segundos.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary">Únete gratis</button>
+        <button class="btn-outlined">Ver planes</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ─── TRUST BAR ─── -->
+  <div class="trust-bar section">
+    <span class="trust-label">Usado por equipos de</span>
+    <div class="trust-logos">
+      <span class="trust-logo">Uber</span>
+      <span class="trust-logo">Airbnb</span>
+      <span class="trust-logo">Stripe</span>
+      <span class="trust-logo">Notion</span>
+      <span class="trust-logo">Figma</span>
+      <span class="trust-logo">Linear</span>
+    </div>
+  </div>
+
+  <div class="page-container">
+
+    <!-- ─── GALLERY ─── -->
+    <section class="section">
+      <div class="gallery-header">
+        <div class="filter-row">
+          <button class="filter-pill active">Todos</button>
+          <button class="filter-pill">Onboarding</button>
+          <button class="filter-pill">Pago</button>
+          <button class="filter-pill">Perfil</button>
+          <button class="filter-pill muted">Más popular</button>
+          <button class="filter-pill muted">Mejor valorado</button>
+        </div>
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input class="search-input" type="text" placeholder="Buscar apps o pantallas…">
+        </div>
+      </div>
+
+      <div style="height: var(--spacing-16)"></div>
+
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="screenshot-card">
+          <div class="screenshot-img">
+            <div class="screenshot-placeholder">
+              <div class="ph-line dark" style="width:60%"></div>
+              <div class="ph-line" style="width:80%"></div>
+              <div class="ph-box"></div>
+              <div class="ph-line" style="width:40%"></div>
+              <div class="ph-line" style="width:70%"></div>
+              <div class="ph-box" style="height:50px"></div>
+              <div class="ph-line dark" style="width:50%"></div>
+            </div>
+          </div>
+          <span class="badge card-badge">New</span>
+          <div class="screenshot-footer">
+            <div class="app-icon-sm">Sp</div>
+            <span class="app-name">Spotify</span>
+            <span class="app-screens">48 pantallas</span>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="screenshot-card">
+          <div class="screenshot-img">
+            <div class="screenshot-placeholder">
+              <div class="ph-box" style="height:120px"></div>
+              <div class="ph-line dark" style="width:70%"></div>
+              <div class="ph-line" style="width:50%"></div>
+              <div class="ph-line" style="width:90%"></div>
+            </div>
+          </div>
+          <span class="badge card-badge" style="background:var(--color-mist);color:var(--color-graphite);">Updated</span>
+          <div class="screenshot-footer">
+            <div class="app-icon-sm">Rb</div>
+            <span class="app-name">Robinhood</span>
+            <span class="app-screens">32 pantallas</span>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="screenshot-card">
+          <div class="screenshot-img">
+            <div class="screenshot-placeholder">
+              <div class="ph-line dark" style="width:45%"></div>
+              <div class="ph-line" style="width:65%"></div>
+              <div class="ph-line" style="width:80%"></div>
+              <div class="ph-box"></div>
+              <div class="ph-line" style="width:55%"></div>
+            </div>
+          </div>
+          <div class="screenshot-footer">
+            <div class="app-icon-sm">Nt</div>
+            <span class="app-name">Notion</span>
+            <span class="app-screens">64 pantallas</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ─── STATS ─── -->
+  <div class="stats-section section">
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-num">84,000</span>
+        <span class="stat-label">Pantallas en la biblioteca</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">1,200</span>
+        <span class="stat-label">Apps documentadas</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">180+</span>
+        <span class="stat-label">Países representados</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-container">
+
+    <!-- ─── TESTIMONIALS ─── -->
+    <section class="section">
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="avatar">AL</div>
+            <div>
+              <div class="t-name">Ana López</div>
+              <div class="t-company">Product Designer · Stripe</div>
+            </div>
+          </div>
+          <p class="t-body">"Uso Mobbin cada vez que empiezo un nuevo flujo. Ver cómo las mejores apps resuelven el mismo problema me ahorra días de exploración."</p>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="avatar">MR</div>
+            <div>
+              <div class="t-name">Marco Ruiz</div>
+              <div class="t-company">Lead Designer · Nubank</div>
+            </div>
+          </div>
+          <p class="t-body">"La búsqueda por texto en screenshots cambió mi flujo de trabajo por completo. Encuentro exactamente lo que necesito en segundos."</p>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="avatar">JK</div>
+            <div>
+              <div class="t-name">Ji-woo Kim</div>
+              <div class="t-company">UX Researcher · Kakao</div>
+            </div>
+          </div>
+          <p class="t-body">"La calidad de los benchmarks competitivos que puedo hacer con esta herramienta es insuperable. Mi equipo no podría vivir sin ella."</p>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <div class="avatar">SB</div>
+            <div>
+              <div class="t-name">Sara Bianchi</div>
+              <div class="t-company">Founder · Lottie</div>
+            </div>
+          </div>
+          <p class="t-body">"Desde que encontré Mobbin no he necesitado otra herramienta de inspiración. Todo está aquí, organizado y actualizado constantemente."</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ─── COMPONENT SPEC ─── -->
+  <div class="spec-section">
+    <div class="spec-grid">
+
+      <div class="spec-card">
+        <div class="spec-title">Botones</div>
+        <div class="spec-content">
+          <button class="btn-primary">Acción principal</button>
+          <button class="btn-outlined">Secundario</button>
+        </div>
+      </div>
+
+      <div class="spec-card">
+        <div class="spec-title">Filter Pills</div>
+        <div class="spec-content">
+          <button class="filter-pill active">Activo</button>
+          <button class="filter-pill">Inactivo</button>
+          <button class="filter-pill muted">Disabled</button>
+        </div>
+      </div>
+
+      <div class="spec-card">
+        <div class="spec-title">Badges</div>
+        <div class="spec-content">
+          <span class="badge">New</span>
+          <span class="badge">Updated</span>
+          <span class="badge badge-muted">Beta</span>
+          <span class="badge badge-muted">Soon</span>
+        </div>
+      </div>
+
+      <div class="spec-card">
+        <div class="spec-title">Input de búsqueda</div>
+        <div class="spec-content">
+          <div class="search-wrap" style="width:100%">
+            <span class="search-icon">⌕</span>
+            <input class="search-input" style="width:100%" type="text" placeholder="Buscar…">
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-card" style="grid-column: span 2;">
+        <div class="spec-title">Paleta de color</div>
+        <div class="spec-content" style="gap:0; border-radius:12px; overflow:hidden; width:100%">
+          <div style="flex:1; height:48px; background:#141414; display:flex; align-items:center; justify-content:center;">
+            <span style="color:white; font-size:11px; font-weight:500;">#141414</span>
+          </div>
+          <div style="flex:1; height:48px; background:#707070; display:flex; align-items:center; justify-content:center;">
+            <span style="color:white; font-size:11px; font-weight:500;">#707070</span>
+          </div>
+          <div style="flex:1; height:48px; background:#adadad; display:flex; align-items:center; justify-content:center;">
+            <span style="color:white; font-size:11px; font-weight:500;">#adadad</span>
+          </div>
+          <div style="flex:1; height:48px; background:#ededed; display:flex; align-items:center; justify-content:center;">
+            <span style="color:#707070; font-size:11px; font-weight:500;">#ededed</span>
+          </div>
+          <div style="flex:1; height:48px; background:#f2f2f2; border:1px solid #ededed; display:flex; align-items:center; justify-content:center;">
+            <span style="color:#707070; font-size:11px; font-weight:500;">#f2f2f2</span>
+          </div>
+          <div style="flex:1; height:48px; background:#ffffff; border:1px solid #ededed; display:flex; align-items:center; justify-content:center;">
+            <span style="color:#adadad; font-size:11px; font-weight:500;">#ffffff</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <span class="footer-copy">© 2026 Masamadre. Todos los derechos reservados.</span>
+    <div class="footer-links">
+      <a href="#">Privacidad</a>
+      <a href="#">Términos</a>
+      <a href="#">Contacto</a>
+    </div>
+  </footer>
+
+</body>
+</html>
