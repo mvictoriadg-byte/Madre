@@ -1864,8 +1864,7 @@
   function actualizarBotoNotif() {
     const btn = document.getElementById('notif-btn');
     if (!btn) return;
-    const yaActivo = localStorage.getItem('madre_notif') === '1' ||
-                     ('Notification' in window && Notification.permission === 'granted');
+    const yaActivo = localStorage.getItem('madre_notif') === '1';
     if (yaActivo) {
       localStorage.setItem('madre_notif', '1');
       btn.textContent = '🔕 Desactivar notificaciones';
