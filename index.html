@@ -14,6 +14,8 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
     :root {
+      --color-accent:        #F26522;
+      --color-accent-dark:   #D4521A;
       --color-midnight-ink:  #141414;
       --color-pure-canvas:   #ffffff;
       --color-graphite:      #707070;
@@ -386,8 +388,11 @@
     }
     .btn:active { transform: scale(0.98); opacity: 0.85; }
     .btn-primary {
-      background: var(--color-midnight-ink);
+      background: var(--color-accent);
       color: var(--color-pure-canvas);
+    }
+    .btn-primary:hover {
+      background: var(--color-accent-dark);
     }
     .btn-secondary {
       background: transparent;

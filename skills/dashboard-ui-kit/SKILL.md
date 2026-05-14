@@ -6,13 +6,13 @@ description: >
 
 # Mobbin-Style UI Kit — Guía de Implementación
 
-Este skill define el sistema de diseño a usar al crear pantallas o componentes en HTML/CSS. El principio central es **restricción achromática total**: cero color, toda la jerarquía visual se construye únicamente con peso tipográfico, tamaño y tono de gris.
+Este skill define el sistema de diseño a usar al crear pantallas o componentes en HTML/CSS. La base es achromática (grises + negro), pero con **un único color de acento cromático**: naranja vivo `#F26522`, reservado exclusivamente para acciones primarias (botón CTA, estados activos, highlights de progreso).
 
 ---
 
 ## Principios fundamentales
 
-1. **Solo `#141414` como "color"** — cada acento UI, icono, botón activo y estado filled usa este negro puro. Nunca hues cromáticos.
+1. **Un solo acento cromático: `#F26522` (naranja vivo)** — reservado exclusivamente para el botón CTA principal, estados activos y highlights de progreso. Todo lo demás es achromático.
 2. **Pills en todo elemento interactivo** — `border-radius: 9999px` en botones, inputs, tags, chips de filtro. Los contenedores no interactivos usan 16–24px.
 3. **Bordes en vez de sombras en cards** — `1px solid #ededed` diferencia las cards del fondo. Las sombras solo existen en dropdowns flotantes.
 4. **Tipografía hace el trabajo del color** — Inter Variable con pesos fraccionarios (440, 456) como sustituto de la fuente propietaria 'saans'.
@@ -28,7 +28,9 @@ Incluir siempre este bloque de variables al inicio de cada archivo:
 
 :root {
   /* ─── Colores ─── */
-  --color-midnight-ink:  #141414;   /* texto primario, botones filled, iconos */
+  --color-accent:        #F26522;   /* naranja vivo — CTA principal, activos, progreso */
+  --color-accent-dark:   #D4521A;   /* naranja oscuro — hover del acento */
+  --color-midnight-ink:  #141414;   /* texto primario, botones secundarios, iconos */
   --color-pure-canvas:   #ffffff;   /* fondo de página, cards, texto sobre dark */
   --color-graphite:      #707070;   /* texto secundario, subtítulos */
   --color-ash:           #adadad;   /* texto terciario, disabled, placeholders */
@@ -127,11 +129,12 @@ La tipografía es el único mecanismo de jerarquía. Aplicar `font-feature-setti
 ## Componentes
 
 ### 1. Botón filled (CTA principal)
+Usa el naranja como background — es el único lugar donde aparece el acento cromático en interactivos.
 ```css
 .btn-primary {
   display: inline-flex;
   align-items: center;
-  background: var(--color-midnight-ink);
+  background: var(--color-accent);
   color: var(--color-pure-canvas);
   border: none;
   border-radius: var(--radius-pill);
@@ -140,11 +143,11 @@ La tipografía es el único mecanismo de jerarquía. Aplicar `font-feature-setti
   font-size: var(--text-body-sm);
   font-weight: var(--fw-semibold);
   cursor: pointer;
-  transition: box-shadow 0.15s ease;
+  transition: background 0.15s ease;
   white-space: nowrap;
 }
 .btn-primary:hover {
-  box-shadow: var(--shadow-subtle);
+  background: var(--color-accent-dark);
 }
 ```
 
@@ -412,7 +415,7 @@ El único lugar donde se usan sombras.
 
 ## Lo que NO hacer
 
-- **Nunca** introducir un color cromático — ni azul para links, ni verde para success, nada. Toda la paleta es achromática.
+- **Un único color cromático permitido: `#F26522`** — solo en botón CTA principal y estados activos. Nunca azul para links, verde para success, ni ningún otro hue.
 - **Nunca** poner `box-shadow` en cards o thumbnails — los bordes hacen ese trabajo.
 - **Nunca** usar `font-weight: 700` o `800` — el peso máximo es 652.
 - **Nunca** usar valores de radius distintos a: `9999px` (interactivo), `24px` (contenedores grandes), `16px` (cards/imágenes), `8px` (badges inline).
@@ -485,7 +488,7 @@ El único lugar donde se usan sombras.
 - [ ] ¿Los botones, inputs y tags usan `border-radius: 9999px`?
 - [ ] ¿Las cards solo tienen `border: 1px solid #ededed` (sin box-shadow)?
 - [ ] ¿Los headlines grandes (56–80px) tienen letter-spacing negativo?
-- [ ] ¿El color más "llamativo" de la UI es `#141414`? (sin colores cromáticos)
+- [ ] ¿El único color cromático es `#F26522` y aparece solo en el CTA principal y estados activos?
 - [ ] ¿Las sombras (`box-shadow`) solo aparecen en dropdowns flotantes?
 - [ ] ¿`font-feature-settings: "calt" 0, "dlig", "ss07"` está aplicado globalmente?
 - [ ] ¿Los headlines display están centrados?
