@@ -633,15 +633,8 @@
         <div class="alert ok">
           <strong>✓ Ventana estimada de pico</strong><br>
           <span id="cp1-ventana-texto"></span>
+          <p style="margin-top:10px; font-size:13px; color: inherit; opacity:0.85;">No la uses antes de entrar en ventana aunque haya duplicado. <strong>Duplicar es una señal, no la señal.</strong></p>
         </div>
-        <div class="alert neutral">
-          No la uses antes de entrar en ventana aunque haya duplicado. <strong>Duplicar es una señal, no la señal.</strong>
-        </div>
-        <div class="alert neutral" id="cp1-alarma-box" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
-          <span style="font-size:13px;">⏰ Alarma para las <strong id="cp1-alarma-hora">—</strong></span>
-          <button onclick="copiarHoraCp1()" style="background:var(--color-midnight-ink);color:white;border:none;border-radius:var(--radius-pill);padding:8px 16px;font-size:12px;font-weight:var(--fw-semibold);cursor:pointer;white-space:nowrap;font-family:var(--font-primary);" id="cp1-copiar-btn">Copiar hora</button>
-        </div>
-        <div id="cp1-copiado-msg" class="hidden" style="font-size:12px;color:var(--ok);text-align:center;margin-top:-6px;margin-bottom:12px;font-weight:var(--fw-ui);">✓ Hora copiada — abrí la app de reloj y pegala</div>
         <div class="card">
           <div class="card-title">Datos registrados</div>
           <table class="data-table">
@@ -653,9 +646,6 @@
         <button class="btn btn-primary" style="margin-top:4px" onclick="goToCheckpoint(2)">
           Ya estoy en ventana → Verificar MM
         </button>
-        <p style="font-size:12px; color: var(--color-ash); text-align:center; margin-top: 12px; font-weight:var(--fw-ui);">
-          Poné la alarma y volvé cuando suene.
-        </p>
       </div>
 
       <div id="cp1-msg-no" class="hidden">
